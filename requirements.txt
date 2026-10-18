@@ -1,0 +1,8 @@
+# Dependencias diretas fixadas nas versoes testadas (Python 3.12).
+Django==5.2.18
+cryptography==50.0.2
+python-dotenv==1.2.4
+dj-database-url==3.1.2
+psycopg[binary]==3.3.6
+gunicorn==26.2.0
+whitenoise==6.12.0

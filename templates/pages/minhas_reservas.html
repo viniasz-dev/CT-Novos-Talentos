@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Minhas reservas | CT Novos Talentos{% endblock %}
+{% block body_class %}page-account{% endblock %}
+{% block content %}
+{% if user.is_staff %}
+<section class="booking-hero" aria-labelledby="minhas-titulo">
+  <div class="container booking-hero__inner">
+    <div>
+      <h1 id="minhas-titulo">Minhas reservas</h1>
+      <p class="booking-hero__lead">Esta página é dos clientes.</p>
+    </div>
+  </div>
+</section>
+<section class="section section--tight" aria-labelledby="equipe-titulo" data-staff-notice>
+  <div class="container">
+    <div class="state">
+      <h2 class="state__title" id="equipe-titulo">A equipe não faz reservas</h2>
+      <p class="muted">Os pedidos dos clientes ficam no Kanban do painel. Para tirar um horário da agenda, use "Bloquear horário".</p>
+      <p class="staff-notice__actions">
+        <a class="btn btn--sm" href="{% url 'painel' %}">Abrir o painel</a>
+        <a class="btn btn--sm btn--ghost" href="{% url 'reservar' %}">Bloquear horário</a>
+      </p>
+    </div>
+  </div>
+</section>
+{% else %}
+<section class="booking-hero" aria-labelledby="minhas-titulo">
+  <div class="container booking-hero__inner booking-hero__inner--row">
+    <div>
+      <h1 id="minhas-titulo">Minhas reservas</h1>
+      <p class="booking-hero__lead">Acompanhe seus pedidos. A equipe confirma cada um e avisa por e-mail.</p>
+    </div>
+    <a class="btn" href="{% url 'reservar' %}">Novo pedido</a>
+  </div>
+</section>
+
+<section id="minhas-reservas" class="section section--tight" aria-label="Lista de pedidos">
+  <div class="container">
+    <div class="toolbar">
+      <div class="field toolbar__field">
+        <label class="field__label" for="filtro-status">Mostrar</label>
+        <select id="filtro-status" class="input" name="status">
+          <option value="">Todos</option>
+          <option value="pendente">Pendentes</option>
+          <option value="aprovado">Aprovados</option>
+          <option value="recusado">Recusados</option>
+          <option value="cancelado">Cancelados</option>
+        </select>
+      </div>
+    </div>
+
+    <ul class="booking-list" data-list-skeleton aria-hidden="true">
+      <li class="skeleton skeleton--row"></li>
+      <li class="skeleton skeleton--row"></li>
+    </ul>
+    <p class="visually-hidden" data-list-skeleton>Carregando suas reservas…</p>
+    <ul id="lista-reservas" class="booking-list" aria-label="Seus pedidos" hidden></ul>
+    <div data-list-status aria-live="polite" hidden></div>
+
+    <template data-state="empty">
+      <div class="state">
+        <h3>Você ainda não fez nenhuma reserva</h3>
+        <p class="muted">Escolha um campo, um dia e os horários livres. Leva menos de um minuto.</p>
+        <a class="btn btn--sm" href="{% url 'reservar' %}">Reservar horário</a>
+      </div>
+    </template>
+    <template data-state="filtered">
+      <div class="state">
+        <h3>Nenhuma reserva com este status</h3>
+        <p class="muted">Escolha "Todos" no filtro para ver todos os pedidos.</p>
+      </div>
+    </template>
+    <template data-state="error">
+      <div class="state state--error">
+        <h3>Não foi possível carregar suas reservas</h3>
+        <p class="muted">Verifique sua conexão e tente de novo.</p>
+        <button class="btn btn--sm btn--ghost" type="button" data-retry>Tentar de novo</button>
+      </div>
+    </template>
+    <noscript><p class="state">Ative o JavaScript para ver suas reservas.</p></noscript>
+  </div>
+</section>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if not user.is_staff %}
+<script type="module">
+  import { initAccount } from "{% static 'js/account.js' %}";
+  initAccount();
+</script>
+{% endif %}
+{% endblock %}

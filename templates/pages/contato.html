@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Contato | CT Novos Talentos{% endblock %}
+{% block body_class %}page-contato{% endblock %}
+{% block content %}
+<section class="page-hero">
+  <img class="page-hero__img" src="{% static 'imgs/WhatsApp Image 2026-05-01 at 18.58.03.jpeg' %}" alt="" />
+  <div class="container">
+    <h1>Entre em contato</h1>
+    <p>Estamos prontos para te atender. Fale com a gente!</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="contact">
+      <aside class="panel" aria-labelledby="info-titulo">
+        <h2 id="info-titulo">Informações de contato</h2>
+        <ul class="info-list">
+          <li>
+            <svg class="icon" aria-hidden="true"><use href="#i-pin"></use></svg>
+            <div><strong>Endereço</strong><span>Av. 61, nº 1269 – Rio Claro, São Paulo<br />CEP 13501-560</span></div>
+          </li>
+          <li>
+            <svg class="icon icon--fill" aria-hidden="true"><use href="#i-whatsapp"></use></svg>
+            <div>
+              <strong>WhatsApp</strong>
+              <span><a href="https://wa.me/5519999117711" target="_blank" rel="noopener">(19) 99911-7711<span class="visually-hidden"> (abre em nova aba)</span></a></span>
+            </div>
+          </li>
+          <li>
+            <svg class="icon" aria-hidden="true"><use href="#i-clock"></use></svg>
+            <div><strong>Horário de funcionamento</strong><span>Segunda a sexta: 18h às 23h</span></div>
+          </li>
+          <li>
+            <svg class="icon icon--fill" aria-hidden="true"><use href="#i-instagram"></use></svg>
+            <div>
+              <strong>Instagram</strong>
+              <span><a href="https://www.instagram.com/ctnovostalentos/" target="_blank" rel="noopener">@ctnovostalentos<span class="visually-hidden"> (abre em nova aba)</span></a></span>
+            </div>
+          </li>
+        </ul>
+      </aside>
+
+      <div class="panel">
+        <h2 id="mensagem-titulo">Envie uma mensagem</h2>
+        <p class="muted">Sua mensagem abre no WhatsApp, pronta para enviar à nossa equipe.</p>
+        <form id="form-contato" class="form mt-6" action="https://wa.me/5519999117711" method="get"
+              target="_blank" novalidate aria-labelledby="mensagem-titulo">
+          <div class="form-alert" data-form-error role="alert" tabindex="-1" hidden></div>
+          <div class="field">
+            <label class="field__label" for="contato-nome">Seu nome <span class="muted">(opcional)</span></label>
+            <input id="contato-nome" name="nome" type="text" autocomplete="name" maxlength="120" placeholder="Como podemos te chamar?" />
+          </div>
+          <div class="field">
+            <label class="field__label" for="contato-assunto">Assunto</label>
+            <select id="contato-assunto" name="assunto">
+              <option>Aluguel de quadra</option>
+              <option>Campeonatos e torneios</option>
+              <option>Outros</option>
+            </select>
+          </div>
+          <div class="field">
+            <label class="field__label" for="contato-mensagem">Mensagem</label>
+            <textarea id="contato-mensagem" name="text" required maxlength="1000"
+                      aria-describedby="contato-mensagem-erro" placeholder="Escreva sua mensagem aqui"></textarea>
+            <p id="contato-mensagem-erro" class="field__error" hidden></p>
+          </div>
+          <button class="btn btn--block" type="submit">
+            <svg class="icon icon--fill" aria-hidden="true"><use href="#i-whatsapp"></use></svg>
+            Enviar pelo WhatsApp
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="map">
+      <iframe
+        title="Mapa com a localização do CT Novos Talentos"
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3688.6!2d-47.56!3d-22.41!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjLCsDI0JzM2LjAiUyA0N8KwMzMnMzYuMCJX!5e0!3m2!1spt-BR!2sbr!4v1620000000000!5m2!1spt-BR!2sbr"
+        allowfullscreen
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script type="module">
+  import { $, buildWhatsAppUrl, showFieldErrors, clearFieldErrors, toast } from "{% static 'js/ui.js' %}";
+
+  const form = $("#form-contato");
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const mensagem = $("#contato-mensagem").value;
+    if (!mensagem.trim()) {
+      showFieldErrors(form, { text: "Escreva sua mensagem antes de enviar." });
+      return;
+    }
+    clearFieldErrors(form);
+    const url = buildWhatsAppUrl("5519999117711", {
+      nome: $("#contato-nome").value,
+      assunto: $("#contato-assunto").value,
+      mensagem,
+    });
+    // "noopener" nos features faz window.open retornar null; zera opener manualmente.
+    const win = window.open(url, "_blank");
+    if (!win) {
+      window.location.assign(url);
+      return;
+    }
+    win.opener = null;
+    toast("Abrimos o WhatsApp em outra aba. É só tocar em enviar.", "success");
+  });
+</script>
+{% endblock %}

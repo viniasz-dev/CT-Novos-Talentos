@@ -1,0 +1,208 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}CT Novos Talentos | Quadra society em Rio Claro{% endblock %}
+{% block body_class %}page-home{% endblock %}
+{% block content %}
+<section class="hero" aria-labelledby="hero-titulo">
+  <video id="hero-video" class="hero__video" muted loop playsinline preload="metadata"
+         poster="{% static 'imgs/WhatsApp Image 2026-05-01 at 18.58.02.jpeg' %}" aria-hidden="true">
+    <source src="{% static 'video/fut.mp4' %}" type="video/mp4" />
+  </video>
+  <div class="hero__shade" aria-hidden="true"></div>
+  <svg class="hero__pitch" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+    <path class="chalk" pathLength="1" d="M1180 -10V910" />
+    <circle class="chalk" pathLength="1" cx="1180" cy="450" r="210" />
+    <circle cx="1180" cy="450" r="7" fill="rgba(241,245,236,0.35)" stroke="none" />
+  </svg>
+
+  <button class="video-toggle" type="button" data-video-toggle hidden>
+    <svg class="icon icon--pause" aria-hidden="true"><use href="#i-pause"></use></svg>
+    <svg class="icon icon--play" aria-hidden="true"><use href="#i-play"></use></svg>
+    <span>Pausar vídeo</span>
+  </button>
+
+  <div class="container hero__inner">
+    <div class="hero__copy">
+      <p class="hero__kicker">
+        <svg class="icon" aria-hidden="true"><use href="#i-ball"></use></svg>
+        Futebol society em Rio Claro
+      </p>
+      <h1 id="hero-titulo">Sua quadra society te espera</h1>
+      <p class="hero__lead">
+        Há anos em Rio Claro, o CT Novos Talentos recebe jogos, treinos e resenhas em um espaço
+        com quadra society, lanchonete, churrasqueira e área para reunir a galera.
+      </p>
+      <div class="hero__actions">
+        <a class="btn btn--lg" href="{% url 'reservar' %}">{% if user.is_staff %}Bloquear horário{% else %}Reservar horário{% endif %}</a>
+        <a class="btn btn--ghost btn--lg" href="{% url 'sobre' %}">Conhecer o CT</a>
+      </div>
+    </div>
+
+    <form id="busca-rapida" class="quick-search form" action="{% url 'reservar' %}" method="get" aria-labelledby="busca-titulo">
+      <h2 id="busca-titulo" class="quick-search__title">Quando você quer jogar?</h2>
+      <div class="field">
+        <label class="field__label" for="busca-data">Data do jogo</label>
+        <input id="busca-data" name="date" type="date" required aria-describedby="busca-dica" />
+        <p id="busca-dica" class="field__hint">
+          <svg class="icon" aria-hidden="true"><use href="#i-clock"></use></svg>
+          Segunda a sexta, das 18h às 23h
+        </p>
+      </div>
+      <button class="btn btn--block" type="submit">Ver horários livres</button>
+    </form>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="campos-titulo">
+  <div class="container">
+    <div class="section__head">
+      <h2 id="campos-titulo">Escolha seu campo</h2>
+      <p>Veja os campos disponíveis e o valor da hora. Escolha um para ver os horários livres.</p>
+    </div>
+
+    <div id="campos" aria-live="polite"
+         data-static-base="{% get_static_prefix %}"
+         data-fallback-photo="{% static 'imgs/WhatsApp Image 2026-05-01 at 18.58.22.jpeg' %}">
+      <ul class="field-grid" data-campos-skeleton aria-hidden="true">
+        <li class="skeleton skeleton--card"></li>
+        <li class="skeleton skeleton--card"></li>
+        <li class="skeleton skeleton--card"></li>
+      </ul>
+      <p class="visually-hidden" data-campos-skeleton>Carregando campos…</p>
+      <ul class="field-grid" data-campos-list hidden></ul>
+      <div data-campos-status hidden></div>
+
+      <template data-state="empty">
+        <div class="state">
+          <h3>Nenhum campo aberto para reserva agora</h3>
+          <p class="muted">Ainda não há campos liberados para reserva online. Fale com a gente pelo WhatsApp para combinar seu horário.</p>
+          <a class="btn btn--sm" href="https://wa.me/5519999117711" target="_blank" rel="noopener">Chamar no WhatsApp<span class="visually-hidden"> (abre em nova aba)</span></a>
+        </div>
+      </template>
+      <template data-state="error">
+        <div class="state state--error">
+          <h3>Não foi possível carregar os campos</h3>
+          <p class="muted">Verifique sua conexão e tente de novo.</p>
+          <button class="btn btn--sm btn--ghost" type="button" data-retry>Tentar de novo</button>
+        </div>
+      </template>
+      <noscript>
+        <p class="state">Ative o JavaScript para ver os campos, ou <a href="{% url 'reservar' %}">vá direto para a reserva</a>.</p>
+      </noscript>
+    </div>
+  </div>
+</section>
+
+<hr class="touchline container" />
+
+<section class="section" aria-labelledby="passos-titulo">
+  <div class="container">
+    <div class="section__head">
+      <h2 id="passos-titulo">Reserve em três passos</h2>
+      <p>Tudo pelo site. A equipe confirma o pedido e você recebe a resposta por e-mail.</p>
+    </div>
+    <ol class="steps">
+      <li class="step">
+        <h3>Escolha</h3>
+        <p>Selecione o campo e o dia em que quer jogar.</p>
+      </li>
+      <li class="step">
+        <h3>Horário</h3>
+        <p>Veja a grade e marque de 1 a 4 horas seguidas que estejam livres.</p>
+      </li>
+      <li class="step">
+        <h3>Confirme</h3>
+        <p>Deixe seu contato e envie. Acompanhe o status em Minhas reservas.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section class="section section--tight" aria-labelledby="estrutura-titulo">
+  <div class="container">
+    <div class="section__head">
+      <h2 id="estrutura-titulo">Estrutura para o jogo e para depois dele</h2>
+    </div>
+    <ul class="amenities">
+      <li class="amenity">
+        <svg class="icon" aria-hidden="true"><use href="#i-pitch"></use></svg>
+        <div><h3>Quadra society</h3><p>Quadras iluminadas para jogar depois do trabalho.</p></div>
+      </li>
+      <li class="amenity">
+        <svg class="icon" aria-hidden="true"><use href="#i-snack"></use></svg>
+        <div><h3>Lanchonete</h3><p>Lanche e bebida antes e depois da partida.</p></div>
+      </li>
+      <li class="amenity">
+        <svg class="icon" aria-hidden="true"><use href="#i-grill"></use></svg>
+        <div><h3>Churrasqueira</h3><p>Espaço para o churrasco do time e das famílias.</p></div>
+      </li>
+      <li class="amenity">
+        <svg class="icon" aria-hidden="true"><use href="#i-chat"></use></svg>
+        <div><h3>Área de resenha</h3><p>Mesas, TV para assistir aos jogos, sinuca e pebolim.</p></div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="precos-titulo">
+  <div class="container">
+    <div class="section__head">
+      <h2 id="precos-titulo">Preços</h2>
+      <p>Horário avulso, fixo toda semana ou o campo inteiro para o seu torneio.</p>
+    </div>
+    <ul class="plans">
+      <li class="plan">
+        <h3>Diária</h3>
+        <p class="plan__price">R$ 150,00</p>
+        <p>Para reservar a quadra em um horário avulso.</p>
+        <a class="btn btn--ghost" href="{% url 'reservar' %}">Reservar diária</a>
+      </li>
+      <li class="plan plan--featured">
+        <h3>Mensal</h3>
+        <p class="plan__price">R$ 600,00 <small>por mês</small></p>
+        <p>Para grupos que jogam toda semana e querem manter um horário fixo.</p>
+        <p><span class="badge">R$ 30,00 de desconto no PIX</span></p>
+        <a class="btn" href="{% url 'reservar' %}">Reservar mensal</a>
+      </li>
+      <li class="plan">
+        <h3>Torneios</h3>
+        <p class="plan__price">Sob consulta</p>
+        <p>Campeonatos, confraternizações e jogos entre equipes.</p>
+        <a class="btn btn--ghost" href="{% url 'contato' %}">Consultar torneio</a>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="section section--tight" aria-labelledby="fotos-titulo">
+  <div class="container">
+    <div class="section__head">
+      <h2 id="fotos-titulo">O CT de dia e de noite</h2>
+    </div>
+    <ul class="gallery">
+      <li><figure><img src="{% static 'imgs/WhatsApp Image 2026-05-01 at 18.58.02.jpeg' %}" alt="Quadra society iluminada à noite" loading="lazy" /><figcaption>Jogos noturnos</figcaption></figure></li>
+      <li><figure><img src="{% static 'imgs/WhatsApp Image 2026-05-01 at 18.58.22.jpeg' %}" alt="Quadra society durante o dia" loading="lazy" /><figcaption>Quadra durante o dia</figcaption></figure></li>
+      <li><figure><img src="{% static 'imgs/WhatsApp Image 2026-05-01 at 18.58.03.jpeg' %}" alt="Quadra ao pôr do sol" loading="lazy" /><figcaption>Fim de tarde</figcaption></figure></li>
+      <li><figure><img src="{% static 'imgs/WhatsApp Image 2026-05-08 at 02.11.12.jpeg' %}" alt="Vista da quadra do CT Novos Talentos" loading="lazy" /><figcaption>Pronta para o jogo</figcaption></figure></li>
+      <li><figure><img src="{% static 'imgs/WhatsApp Image 2026-05-01 at 18.58.21.jpeg' %}" alt="Espaço do CT Novos Talentos" loading="lazy" /><figcaption>Espaço do CT</figcaption></figure></li>
+    </ul>
+  </div>
+</section>
+
+<section class="cta-band section" aria-labelledby="cta-titulo">
+  <div class="container cta-band__inner">
+    <div>
+      <h2 id="cta-titulo">Bora marcar o jogo?</h2>
+      <p>Veja os horários livres desta semana e garanta o seu.</p>
+    </div>
+    <a class="btn btn--lg" href="{% url 'reservar' %}">{% if user.is_staff %}Bloquear horário{% else %}Reservar horário{% endif %}</a>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script type="module">
+  import { initHome } from "{% static 'js/home.js' %}";
+  initHome();
+</script>
+{% endblock %}

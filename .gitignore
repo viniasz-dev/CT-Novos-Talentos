@@ -1,0 +1,10 @@
+.claude/
+.env
+*.pyc
+__pycache__/
+db.sqlite3
+.venv/
+staticfiles/
+.superpowers/
+node_modules/
+*.sqlite3

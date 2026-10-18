@@ -1,0 +1,98 @@
+/*
+ * Design tokens - CT Novos Talentos
+ *
+ * Direção: "campo à noite sob refletores". Fundo verde-noite (não preto puro),
+ * marcações de giz do campo como estrutura visual (linhas, círculo central),
+ * verde #7ac400 da marca como a cor da ação. Bebas Neue para placar e títulos,
+ * Barlow para leitura.
+ *
+ * Contraste (WCAG 2.x, calculado):
+ *   chalk  #f1f5ec sobre night #0c120d  17.16:1
+ *   mist   #a8b5a4 sobre turf  #142017   7.86:1 (turf-2: 6.93:1)
+ *   grass  #7ac400 sobre night #0c120d   8.78:1 (texto e foco)
+ *   night  #0c120d sobre grass #7ac400   8.78:1 (texto de botão)
+ *   flood  #f4d35e sobre turf  #142017  11.47:1
+ *   danger #ff8a7a sobre turf  #142017   7.34:1
+ *   line-strong #617a65 sobre night      4.04:1 (borda de input)
+ */
+:root {
+  /* cores base */
+  --c-night: #0c120d;   /* fundo: campo à noite */
+  --c-turf: #142017;    /* superfície */
+  --c-turf-2: #1c2b1f;  /* superfície elevada / hover */
+  --c-line: #2f4232;    /* bordas decorativas (cards, divisórias) */
+  --c-line-strong: #617a65; /* borda de campos de formulário: >= 3:1 (1.4.11) */
+  --c-chalk: #f1f5ec;   /* texto principal, linhas de giz */
+  --c-mist: #a8b5a4;    /* texto secundário */
+  --c-grass: #7ac400;   /* marca / ação */
+  --c-grass-deep: #5e9700;
+  --c-flood: #f4d35e;   /* refletor: só para destaque de economia/aviso */
+  --c-danger: #ff8a7a;
+
+  /* papéis */
+  --bg: var(--c-night);
+  --surface: var(--c-turf);
+  --surface-raised: var(--c-turf-2);
+  --border: var(--c-line);
+  --text: var(--c-chalk);
+  --text-muted: var(--c-mist);
+  --accent: var(--c-grass);
+  --on-accent: var(--c-night);
+  --focus: var(--c-grass);
+  --chalk-line: rgba(241, 245, 236, 0.22);
+
+  /* tipografia */
+  --font-display: "Bebas Neue", "Oswald", Impact, "Arial Narrow", sans-serif;
+  --font-body: "Barlow", "Segoe UI", system-ui, -apple-system, Roboto, sans-serif;
+
+  /* escala (corpo 1.25, display livre) */
+  --fs-xs: 0.8125rem;   /* 13 */
+  --fs-sm: 0.9375rem;   /* 15 */
+  --fs-md: 1.0625rem;   /* 17 - corpo */
+  --fs-lg: 1.25rem;     /* 20 */
+  --fs-xl: 1.5625rem;   /* 25 */
+  --fs-2xl: clamp(2rem, 5vw + 1rem, 3rem);
+  --fs-3xl: clamp(2.5rem, 7vw + 1rem, 4.5rem);
+  --fs-display: clamp(3.4rem, 11vw + 0.5rem, 8.5rem);
+  --lh-body: 1.6;
+  --lh-tight: 0.92;
+  --measure: 68ch;
+
+  /* espaçamento (base 4) */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4.5rem;
+  --s-9: 7rem;
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --container: 72rem;
+
+  /* raios: hierarquia, não um valor único */
+  --r-sm: 6px;    /* campos, chips, botões */
+  --r-md: 14px;   /* cards */
+  --r-lg: 22px;   /* painel da busca, blocos de destaque */
+  --r-pill: 999px;
+
+  /* sombras: só para elementos que flutuam */
+  --shadow-float: 0 18px 50px -18px rgba(0, 0, 0, 0.75), 0 2px 0 rgba(122, 196, 0, 0.12) inset;
+  --shadow-toast: 0 12px 30px -10px rgba(0, 0, 0, 0.8);
+
+  /* movimento */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --t-fast: 140ms;
+  --t-med: 260ms;
+
+  --header-h: 4.25rem;
+  color-scheme: dark;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --t-fast: 0ms;
+    --t-med: 0ms;
+  }
+}

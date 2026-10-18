@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Serviços e preços | CT Novos Talentos{% endblock %}
+{% block body_class %}page-servicos{% endblock %}
+{% block content %}
+<section class="page-hero">
+  <img class="page-hero__img" src="{% static 'imgs/WhatsApp Image 2026-05-08 at 02.11.12.jpeg' %}" alt="" />
+  <div class="container">
+    <h1>Nossos serviços</h1>
+    <p>Confira as opções para jogar no CT Novos Talentos.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="atendimentos-titulo">
+  <div class="container">
+    <div class="section__head">
+      <h2 id="atendimentos-titulo">Conheça nossos atendimentos</h2>
+      <p>Escolha o formato e veja os horários livres na página de reserva.</p>
+    </div>
+
+    <ul class="plans">
+      <li class="plan">
+        <svg class="icon plan__icon" aria-hidden="true"><use href="#i-calendar"></use></svg>
+        <h3>Diária</h3>
+        <p class="plan__price">R$ 150,00</p>
+        <p>Ideal para quem quer reservar a quadra em um horário avulso.</p>
+        <a class="btn btn--ghost" href="{% url 'reservar' %}">Reservar diária</a>
+      </li>
+      <li class="plan plan--featured">
+        <svg class="icon plan__icon" aria-hidden="true"><use href="#i-repeat"></use></svg>
+        <h3>Mensal</h3>
+        <p class="plan__price">R$ 600,00 <small>por mês</small></p>
+        <p>Para grupos que jogam toda semana e querem manter um horário fixo.</p>
+        <p><span class="badge">Pagamento no PIX tem R$ 30,00 de desconto</span></p>
+        <a class="btn" href="{% url 'reservar' %}">Reservar mensal</a>
+        <p class="muted"><small>Ao reservar, avise na mensagem do pedido que é mensal.</small></p>
+      </li>
+      <li class="plan">
+        <svg class="icon plan__icon" aria-hidden="true"><use href="#i-trophy"></use></svg>
+        <h3>Torneios</h3>
+        <p class="plan__price">Sob consulta</p>
+        <p>Espaço para campeonatos, confraternizações e jogos entre equipes.</p>
+        <a class="btn btn--ghost" href="{% url 'reservar' %}">Ver datas livres</a>
+      </li>
+    </ul>
+
+    <p class="muted mt-6">
+      Dúvidas sobre mensalidade ou torneio? <a href="{% url 'contato' %}">Fale com a gente</a>.
+    </p>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Sobre | CT Novos Talentos{% endblock %}
+{% block body_class %}page-sobre{% endblock %}
+{% block content %}
+<section class="page-hero">
+  <img class="page-hero__img" src="{% static 'imgs/WhatsApp Image 2026-05-01 at 18.58.22.jpeg' %}" alt="" />
+  <div class="container">
+    <h1>Sobre o CT Novos Talentos</h1>
+    <p>Conheça um pouco mais sobre o nosso espaço.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="historia-titulo">
+  <div class="container about">
+    <div class="about__text">
+      <h2 id="historia-titulo">Nossa história</h2>
+      <p>
+        O CT Novos Talentos é um espaço esportivo de Rio Claro que há mais de 30 anos trabalha com
+        futebol, escolinha e formação de novos talentos. O projeto nasceu com a ideia de incentivar a
+        molecada a praticar esporte, revelar jogadores e oferecer um ambiente positivo para tirar
+        crianças e jovens da rua.
+      </p>
+      <p>
+        Além das quadras, o CT conta com um espaço completo para jogadores, famílias e visitantes, com
+        TV para assistir jogos, churrasqueira, lanchonete, mesa de sinuca, pebolim e uma área ampla
+        para carros e motos.
+      </p>
+
+      <h3 class="mt-6">Nossa estrutura</h3>
+      <ul class="checklist">
+        <li><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg>3 quadras society</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg>Bar</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg>Churrasco</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg>Vestiário</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg>Área ampla de estacionamento</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg>Mesas para assistir aos jogos</li>
+        <li><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg>Área de alimentação e lazer</li>
+      </ul>
+
+      <p class="mt-6"><a class="btn" href="{% url 'reservar' %}">Reservar horário</a></p>
+    </div>
+
+    <figure class="about__card">
+      <img src="{% static 'imgs/logo-card.jpeg' %}" alt="Logo do CT Novos Talentos" />
+    </figure>
+  </div>
+</section>
+
+<section class="section section--tight" aria-labelledby="fotos-titulo">
+  <div class="container">
+    <div class="section__head">
+      <h2 id="fotos-titulo">Fotos do espaço</h2>
+      <p>Veja algumas fotos da estrutura do CT Novos Talentos.</p>
+    </div>
+    <ul class="gallery gallery--3">
+      <li><figure><img src="{% static 'imgs/WhatsApp Image 2026-05-01 at 18.58.22.jpeg' %}" alt="Quadra society" loading="lazy" /><figcaption>Quadra durante o dia</figcaption></figure></li>
+      <li><figure><img src="{% static 'imgs/WhatsApp Image 2026-05-01 at 18.58.03.jpeg' %}" alt="Quadra ao pôr do sol" loading="lazy" /><figcaption>Ambiente no fim da tarde</figcaption></figure></li>
+      <li><figure><img src="{% static 'imgs/WhatsApp Image 2026-05-01 at 18.58.02.jpeg' %}" alt="Quadra à noite" loading="lazy" /><figcaption>Jogos noturnos</figcaption></figure></li>
+    </ul>
+  </div>
+</section>
+{% endblock %}

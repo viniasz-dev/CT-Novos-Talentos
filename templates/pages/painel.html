@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Painel da equipe | CT Novos Talentos{% endblock %}
+{% block body_class %}page-panel{% endblock %}
+{% block content %}
+<section class="booking-hero" aria-labelledby="painel-titulo">
+  <div class="container booking-hero__inner">
+    <div>
+      <h1 id="painel-titulo">Painel da equipe</h1>
+      <p class="booking-hero__lead">Os pedidos de reserva num quadro só: aprove, recuse ou cancele arrastando o card ou pelo botão "Mover para…".</p>
+    </div>
+  </div>
+</section>
+
+<div id="painel" class="section section--tight">
+  <div class="container">
+    <div data-panel-checking class="state" aria-live="polite">
+      <h2 class="state__title">Verificando acesso…</h2>
+    </div>
+
+    <div data-panel-denied class="state state--error" role="alert" hidden>
+      <h2 class="state__title" data-denied-title>Acesso restrito</h2>
+      <p class="muted" data-denied-text></p>
+      <a class="btn btn--sm" data-denied-link href="/">Voltar para a home</a>
+    </div>
+
+    <div data-panel-shell hidden>
+      <div id="painel-abas" class="tabs" role="tablist" aria-label="Seções do painel">
+        <button class="tabs__tab" type="button" role="tab" id="aba-kanban" data-tab="kanban" aria-controls="painel-kanban" aria-selected="true">Kanban</button>
+        <button class="tabs__tab" type="button" role="tab" id="aba-pedidos" data-tab="pedidos" aria-controls="painel-pedidos" aria-selected="false" tabindex="-1">Pedidos</button>
+        <button class="tabs__tab" type="button" role="tab" id="aba-bloqueios" data-tab="bloqueios" aria-controls="painel-bloqueios" aria-selected="false" tabindex="-1">Bloqueios</button>
+        <button class="tabs__tab" type="button" role="tab" id="aba-agenda" data-tab="agenda" aria-controls="painel-agenda" aria-selected="false" tabindex="-1">Agenda do dia</button>
+        <button class="tabs__tab" type="button" role="tab" id="aba-cripto" data-tab="cripto" aria-controls="painel-cripto" aria-selected="false" tabindex="-1">Criptografia</button>
+      </div>
+
+      <section id="painel-kanban" class="tabs__panel" role="tabpanel" tabindex="0" aria-labelledby="aba-kanban">
+        <section class="kpis" data-kpis aria-labelledby="kpis-titulo">
+          <h2 id="kpis-titulo" class="visually-hidden">Indicadores</h2>
+          <ul class="kpis__grid" data-kpi-grid></ul>
+          <p class="kpis__note muted">Próximos 7 dias a partir de hoje, no campo escolhido no filtro. Receita estimada: horas aprovadas vezes o preço por hora.</p>
+          <p class="visually-hidden" data-kpi-live aria-live="polite"></p>
+        </section>
+        <form id="filtros-kanban" class="form toolbar kanban-filters" novalidate role="search" aria-label="Filtrar o Kanban">
+          <div class="field toolbar__field">
+            <label class="field__label" for="kanban-campo">Campo</label>
+            <select id="kanban-campo" name="field"><option value="">Todos os campos</option></select>
+          </div>
+          <div class="field toolbar__field">
+            <label class="field__label" for="kanban-de">De</label>
+            <input id="kanban-de" name="date_from" type="date" />
+          </div>
+          <div class="field toolbar__field">
+            <label class="field__label" for="kanban-ate">Até</label>
+            <input id="kanban-ate" name="date_to" type="date" aria-describedby="kanban-ate-erro" />
+            <p id="kanban-ate-erro" class="field__error" hidden></p>
+          </div>
+          <div class="field toolbar__field kanban-filters__search">
+            <label class="field__label" for="kanban-busca">Cliente</label>
+            <input id="kanban-busca" name="q" type="search" placeholder="Nome ou e-mail" autocomplete="off" />
+          </div>
+          <div class="toolbar__nav">
+            <button class="btn btn--sm" type="submit">Atualizar</button>
+          </div>
+          <div class="form-alert" data-form-error role="alert" tabindex="-1" hidden></div>
+        </form>
+        <p class="kanban__hint muted">Arraste o card para outra coluna ou use "Mover para…". Recusado e Cancelado são finais.</p>
+        <div data-kanban-status aria-live="polite" hidden></div>
+        <div class="kanban" data-kanban-board aria-label="Kanban de pedidos" role="region" hidden></div>
+        <p class="visually-hidden" data-kanban-live aria-live="polite"></p>
+      </section>
+
+      <section id="painel-pedidos" class="tabs__panel" role="tabpanel" tabindex="0" aria-labelledby="aba-pedidos" hidden>
+        <form id="filtros-pedidos" class="form toolbar" novalidate>
+          <div class="field toolbar__field">
+            <label class="field__label" for="pedidos-status">Status</label>
+            <select id="pedidos-status" name="status">
+              <option value="pendente" selected>Pendentes</option>
+              <option value="aprovado">Aprovados</option>
+              <option value="recusado">Recusados</option>
+              <option value="cancelado">Cancelados</option>
+              <option value="">Todos</option>
+            </select>
+          </div>
+          <div class="field toolbar__field">
+            <label class="field__label" for="pedidos-campo">Campo</label>
+            <select id="pedidos-campo" name="field"><option value="">Todos os campos</option></select>
+          </div>
+          <div class="field toolbar__field">
+            <label class="field__label" for="pedidos-data">Dia</label>
+            <input id="pedidos-data" name="date" type="date" />
+          </div>
+        </form>
+        <ul class="order-list" data-orders-list aria-label="Pedidos"></ul>
+        <div data-orders-status aria-live="polite" hidden></div>
+      </section>
+
+      <section id="painel-bloqueios" class="tabs__panel" role="tabpanel" tabindex="0" aria-labelledby="aba-bloqueios" hidden>
+        <form id="form-bloqueio" class="form block-form" novalidate>
+          <h2 class="block-form__title">Novo bloqueio</h2>
+          <div class="form-alert" data-form-error role="alert" tabindex="-1" hidden></div>
+          <div class="block-form__grid">
+            <div class="field">
+              <label class="field__label" for="bloqueio-campo">Campo</label>
+              <select id="bloqueio-campo" name="field"></select>
+            </div>
+            <div class="field">
+              <label class="field__label" for="bloqueio-data">Dia</label>
+              <input id="bloqueio-data" name="date" type="date" />
+            </div>
+            <div class="field">
+              <label class="field__label" for="bloqueio-inicio">Início</label>
+              <select id="bloqueio-inicio" name="start"></select>
+            </div>
+            <div class="field">
+              <label class="field__label" for="bloqueio-fim">Fim</label>
+              <select id="bloqueio-fim" name="end"></select>
+            </div>
+          </div>
+          <p class="field__hint" data-block-hint aria-live="polite" hidden></p>
+          <div class="field">
+            <div class="field__row">
+              <label class="field__label" for="bloqueio-motivo">Motivo <span class="muted">(opcional)</span></label>
+              <span class="field__counter" data-reason-counter aria-live="polite">0/200</span>
+            </div>
+            <input id="bloqueio-motivo" name="reason" type="text" maxlength="200" aria-describedby="bloqueio-motivo-erro" />
+            <p id="bloqueio-motivo-erro" class="field__error" hidden></p>
+          </div>
+          <button class="btn" type="submit">Criar bloqueio</button>
+        </form>
+        <h2 class="panel-subtitle">Bloqueios atuais e futuros</h2>
+        <ul class="order-list" data-blocks-list aria-label="Bloqueios"></ul>
+        <div data-blocks-status aria-live="polite" hidden></div>
+      </section>
+
+      <section id="painel-agenda" class="tabs__panel" role="tabpanel" tabindex="0" aria-labelledby="aba-agenda" hidden>
+        <form id="filtros-agenda" class="form toolbar" novalidate>
+          <div class="field toolbar__field">
+            <label class="field__label" for="agenda-campo">Campo</label>
+            <select id="agenda-campo" name="field"></select>
+          </div>
+          <div class="field toolbar__field">
+            <label class="field__label" for="agenda-data">Dia</label>
+            <input id="agenda-data" name="date" type="date" />
+          </div>
+          <div class="toolbar__nav">
+            <button class="btn btn--sm btn--ghost" type="button" data-day-prev>Dia anterior</button>
+            <button class="btn btn--sm btn--ghost" type="button" data-day-next>Próximo dia</button>
+          </div>
+        </form>
+        <h2 class="panel-subtitle" data-agenda-title aria-live="polite"></h2>
+        <ol class="agenda" data-agenda-list aria-label="Horários do dia"></ol>
+        <div data-agenda-status aria-live="polite" hidden></div>
+      </section>
+
+      <section id="painel-cripto" class="tabs__panel" role="tabpanel" tabindex="0" aria-labelledby="aba-cripto" hidden>
+        <p class="cipher-intro muted">Os 12 pedidos mais recentes como estão no banco: contato e mensagem em tokens Fernet, ilegíveis sem a chave. "Descriptografar" mostra o texto por 30 segundos e grava o acesso na auditoria. <a href="{% url 'criptografia' %}">Como funciona</a></p>
+        <ul class="order-list cipher-list" data-crypto-list aria-label="Pedidos e dados criptografados"></ul>
+        <div data-crypto-status aria-live="polite" hidden></div>
+      </section>
+    </div>
+    <noscript><p class="state">Ative o JavaScript para usar o painel.</p></noscript>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="module">
+  import { initPanel } from "{% static 'js/panel.js' %}";
+  initPanel();
+</script>
+{% endblock %}

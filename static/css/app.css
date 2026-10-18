@@ -1,0 +1,6 @@
+/* Ponto de entrada do design system. Ordem: tokens -> base -> componentes -> páginas. */
+@import url("tokens.css");
+@import url("base.css");
+@import url("components.css");
+@import url("pages.css");
+@import url("crypto.css");

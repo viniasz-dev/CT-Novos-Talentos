@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{% if user.is_staff %}Bloquear horário{% else %}Reservar horário{% endif %} | CT Novos Talentos{% endblock %}
+{% block description %}Escolha o campo, o dia e de 1 a 4 horas seguidas. Veja os horários livres e envie seu pedido de reserva.{% endblock %}
+{% block body_class %}page-booking{% endblock %}
+{% block content %}
+<div id="reserva" class="booking-page{% if user.is_staff %} booking-page--block{% endif %}"
+     data-mode="{% if user.is_staff %}block{% else %}booking{% endif %}"
+     data-static-base="{% get_static_prefix %}"
+     data-fallback-photo="{% static 'imgs/WhatsApp Image 2026-05-01 at 18.58.22.jpeg' %}">
+
+  <section class="booking-hero" aria-labelledby="reservar-titulo">
+    <div class="container booking-hero__inner">
+      <div>
+        {% if user.is_staff %}
+        <h1 id="reservar-titulo">Bloquear horário</h1>
+        <p class="booking-hero__lead">Tire da agenda de 1 a 4 horas seguidas: escolha o campo, o dia e os horários e diga o motivo. Toque num horário bloqueado para ver o motivo ou liberar.</p>
+        {% else %}
+        <h1 id="reservar-titulo">Reservar horário</h1>
+        <p class="booking-hero__lead">Escolha o campo, o dia e de 1 a 4 horas seguidas. A equipe confirma o pedido e você recebe a resposta por e-mail.</p>
+        {% endif %}
+      </div>
+      <ol class="flow" aria-label="{% if user.is_staff %}Etapas do bloqueio{% else %}Etapas da reserva{% endif %}">
+        <li class="flow__step" data-step="campo"><span class="flow__n" aria-hidden="true">1</span>Campo</li>
+        <li class="flow__step" data-step="dia"><span class="flow__n" aria-hidden="true">2</span>Dia</li>
+        <li class="flow__step" data-step="horario"><span class="flow__n" aria-hidden="true">3</span>Horário</li>
+        <li class="flow__step" data-step="confirmar"><span class="flow__n" aria-hidden="true">4</span>{% if user.is_staff %}Bloquear{% else %}Confirmar{% endif %}</li>
+      </ol>
+    </div>
+  </section>
+
+  <div class="container booking">
+    <div class="booking__main">
+
+      <section id="campos-reserva" class="booking-step" aria-labelledby="passo-campo">
+        <h2 id="passo-campo" class="booking-step__title">Escolha o campo</h2>
+        <div class="pick-grid" data-fields-skeleton aria-hidden="true">
+          <div class="skeleton skeleton--pick"></div>
+          <div class="skeleton skeleton--pick"></div>
+        </div>
+        <p class="visually-hidden" data-fields-skeleton>Carregando campos…</p>
+        <div class="pick-grid" role="radiogroup" aria-labelledby="passo-campo" data-fields-list hidden></div>
+        <div data-fields-status aria-live="polite" hidden></div>
+
+        <template data-state="empty">
+          <div class="state">
+            <h3>Nenhum campo aberto para reserva agora</h3>
+            <p class="muted">Ainda não há campos liberados para reserva online. Fale com a gente pelo WhatsApp para combinar seu horário.</p>
+            <a class="btn btn--sm" href="https://wa.me/5519999117711" target="_blank" rel="noopener">Chamar no WhatsApp<span class="visually-hidden"> (abre em nova aba)</span></a>
+          </div>
+        </template>
+        <template data-state="error">
+          <div class="state state--error">
+            <h3>Não foi possível carregar os campos</h3>
+            <p class="muted">Verifique sua conexão e tente de novo.</p>
+            <button class="btn btn--sm btn--ghost" type="button" data-retry>Tentar de novo</button>
+          </div>
+        </template>
+        <noscript>
+          <div class="state">
+            <h3>Ative o JavaScript para reservar</h3>
+            <p class="muted">A grade de horários precisa de JavaScript. Se preferir, fale com a gente pelo <a href="https://wa.me/5519999117711">WhatsApp</a>.</p>
+          </div>
+        </noscript>
+      </section>
+
+      <section id="calendario" class="booking-step" aria-labelledby="passo-dia">
+        <h2 id="passo-dia" class="booking-step__title">Escolha o dia</h2>
+        <div class="cal">
+          <div class="cal__head">
+            <button class="cal__nav" type="button" data-cal-prev aria-label="Mês anterior">
+              <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m14.5 6-6 6 6 6"/></svg>
+            </button>
+            <h3 class="cal__title" data-cal-title aria-live="polite"></h3>
+            <button class="cal__nav" type="button" data-cal-next aria-label="Próximo mês">
+              <svg class="icon" aria-hidden="true" viewBox="0 0 24 24"><path d="m9.5 6 6 6-6 6"/></svg>
+            </button>
+          </div>
+          <div class="cal__week" aria-hidden="true">
+            <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span><span>Sex</span><span>Sáb</span>
+          </div>
+          <div class="cal__days" data-cal-body role="group" aria-labelledby="passo-dia"></div>
+          <ul class="cal__legend" aria-label="Legenda do calendário">
+            <li><span class="cal__key cal__key--free" aria-hidden="true"></span>Com horário livre</li>
+            <li><span class="cal__key cal__key--full" aria-hidden="true"></span>{% if user.is_staff %}Lotado (abre para ver os bloqueios) ou fechado{% else %}Lotado ou fechado{% endif %}</li>
+          </ul>
+        </div>
+        <p class="booking-step__hint" data-cal-hint aria-live="polite" hidden></p>
+      </section>
+
+      <section id="horarios" class="booking-step" aria-labelledby="passo-horario">
+        <h2 id="passo-horario" class="booking-step__title">Escolha o horário</h2>
+        <ul class="legend" aria-label="Legenda dos horários">
+          <li><span class="legend__key legend__key--free" aria-hidden="true"></span>Livre</li>
+          <li><span class="legend__key legend__key--selected" aria-hidden="true"></span>Selecionado</li>
+          {% if user.is_staff %}
+          <li><span class="legend__key legend__key--booked" aria-hidden="true"></span>Reservado</li>
+          <li><span class="legend__key legend__key--blocked" aria-hidden="true"></span>Bloqueado (toque para ver)</li>
+          {% else %}
+          <li><span class="legend__key legend__key--booked" aria-hidden="true"></span>Ocupado</li>
+          <li><span class="legend__key legend__key--blocked" aria-hidden="true"></span>Bloqueado</li>
+          {% endif %}
+          <li><span class="legend__key legend__key--past" aria-hidden="true"></span>Encerrado</li>
+        </ul>
+        <p class="booking-step__hint" data-slots-hint aria-live="polite"></p>
+        <div class="slots" data-slots-skeleton aria-hidden="true" hidden>
+          <div class="skeleton skeleton--slot"></div>
+          <div class="skeleton skeleton--slot"></div>
+          <div class="skeleton skeleton--slot"></div>
+          <div class="skeleton skeleton--slot"></div>
+          <div class="skeleton skeleton--slot"></div>
+        </div>
+        <ol class="slots" data-slots-list aria-label="Horários do dia" hidden></ol>
+        <div data-slots-status aria-live="polite" hidden></div>
+      </section>
+    </div>
+
+    {% if user.is_staff %}
+    <aside id="resumo" class="ticket ticket--block" aria-labelledby="passo-confirmar">
+      <h2 id="passo-confirmar" class="ticket__title">Bloqueio</h2>
+      <dl class="ticket__rows">
+        <div><dt>Campo</dt><dd data-sum-field>—</dd></div>
+        <div><dt>Dia</dt><dd data-sum-date>—</dd></div>
+        <div><dt>Horário</dt><dd data-sum-time>—</dd></div>
+        <div><dt>Duração</dt><dd data-sum-hours>—</dd></div>
+      </dl>
+      <p class="block-done" data-block-done role="status" hidden></p>
+      <div class="block-view" data-block-view hidden></div>
+
+      <form id="form-reserva" class="form ticket__form ticket__form--block" novalidate>
+        <div class="form-alert" data-form-error role="alert" tabindex="-1" hidden></div>
+
+        <div class="field">
+          <div class="field__row">
+            <label class="field__label" for="bloqueio-motivo">Motivo</label>
+            <span class="field__counter" data-reason-counter aria-live="polite">0/200</span>
+          </div>
+          <input id="bloqueio-motivo" name="reason" type="text" maxlength="200" required autocomplete="off"
+                 aria-describedby="bloqueio-motivo-dica bloqueio-motivo-erro" />
+          <p id="bloqueio-motivo-dica" class="field__hint">Só a equipe vê o motivo. Os clientes veem o horário como bloqueado.</p>
+          <div class="chips" role="group" aria-label="Sugestões de motivo">
+            <button class="chip" type="button" data-reason-suggestion="Manutenção">Manutenção</button>
+            <button class="chip" type="button" data-reason-suggestion="Evento do CT">Evento do CT</button>
+            <button class="chip" type="button" data-reason-suggestion="Horário da escolinha">Horário da escolinha</button>
+          </div>
+          <p id="bloqueio-motivo-erro" class="field__error" hidden></p>
+        </div>
+
+        <button class="btn btn--block btn--lg" type="submit">Bloquear horário</button>
+        <p class="ticket__note">O horário sai da agenda dos clientes até você liberar.</p>
+      </form>
+    </aside>
+    {% else %}
+    <aside id="resumo" class="ticket" aria-labelledby="passo-confirmar">
+      <h2 id="passo-confirmar" class="ticket__title">Seu pedido</h2>
+      <dl class="ticket__rows">
+        <div><dt>Campo</dt><dd data-sum-field>—</dd></div>
+        <div><dt>Dia</dt><dd data-sum-date>—</dd></div>
+        <div><dt>Horário</dt><dd data-sum-time>—</dd></div>
+        <div><dt>Duração</dt><dd data-sum-hours>—</dd></div>
+      </dl>
+      <p class="ticket__total"><span>Total estimado</span> <strong data-sum-total aria-live="polite">—</strong></p>
+
+      <form id="form-reserva" class="form ticket__form" novalidate>
+        <div class="form-alert" data-form-error role="alert" tabindex="-1" hidden></div>
+
+        <div class="field">
+          <label class="field__label" for="reserva-contato">Telefone ou WhatsApp</label>
+          <input id="reserva-contato" name="contact" type="text" inputmode="tel" autocomplete="tel"
+                 maxlength="120" required aria-describedby="reserva-contato-dica reserva-contato-erro" />
+          <p id="reserva-contato-dica" class="field__hint">Para a equipe falar com você sobre o pedido.</p>
+          <p id="reserva-contato-erro" class="field__error" hidden></p>
+        </div>
+
+        <div class="field">
+          <div class="field__row">
+            <label class="field__label" for="reserva-mensagem">Mensagem <span class="muted">(opcional)</span></label>
+            <span class="field__counter" data-counter aria-live="polite">0/500</span>
+          </div>
+          <textarea id="reserva-mensagem" name="message" maxlength="500" rows="3"
+                    aria-describedby="reserva-mensagem-erro"></textarea>
+          <p id="reserva-mensagem-erro" class="field__error" hidden></p>
+        </div>
+
+        <button class="btn btn--block btn--lg" type="submit">Enviar pedido</button>
+        <p class="ticket__note">O pedido fica pendente até a equipe confirmar.</p>
+      </form>
+
+      <div data-success aria-live="polite" hidden></div>
+    </aside>
+    {% endif %}
+  </div>
+
+  <div class="booking-bar" data-booking-bar hidden>
+    <div class="booking-bar__info">
+      <span class="booking-bar__time" data-bar-time></span>
+      <strong class="booking-bar__total" data-bar-total></strong>
+    </div>
+    <button class="btn btn--sm" type="button" data-bar-go>{% if user.is_staff %}Revisar bloqueio{% else %}Revisar pedido{% endif %}</button>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="module">
+  import { initBooking } from "{% static 'js/booking.js' %}";
+  initBooking();
+</script>
+{% endblock %}

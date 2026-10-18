@@ -1,0 +1,121 @@
+{% load static %}<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0c120d" />
+    <meta name="description" content="{% block description %}CT Novos Talentos: quadra society em Rio Claro. Veja horários livres e reserve online.{% endblock %}" />
+    <title>{% block title %}CT Novos Talentos{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Bebas+Neue&display=swap" />
+    <link rel="stylesheet" href="{% static 'css/app.css' %}" />
+    <link rel="icon" type="image/png" sizes="128x128" href="{% static 'imgs/favicon.png' %}" />
+    <link rel="apple-touch-icon" href="{% static 'imgs/favicon.png' %}" />
+    {% block head %}{% endblock %}
+  </head>
+  <body class="{% block body_class %}{% endblock %}">
+    <a class="skip-link" href="#main">Pular para o conteúdo</a>
+
+    {% include "partials/icons.html" %}
+
+    {% with current=request.resolver_match.url_name %}
+    <header class="site-header">
+      <div class="container site-header__bar">
+        <a class="brand" href="{% url 'index' %}">
+          <img class="brand__logo" src="{% static 'imgs/logo.png' %}" alt="" width="44" height="44" />
+          <span class="brand__name">CT Novos <span>Talentos</span></span>
+          <span class="visually-hidden">, página inicial</span>
+        </a>
+
+        <a class="btn btn--sm header-cta" href="{% url 'reservar' %}"{% if current == 'reservar' %} aria-current="page"{% endif %}>{% if user.is_staff %}Bloquear horário{% else %}Reservar{% endif %}</a>
+
+        <button class="nav-toggle" type="button" data-menu-toggle aria-expanded="false" aria-controls="menu-principal" aria-label="Abrir menu">
+          <span class="nav-toggle__bars" aria-hidden="true"></span>
+        </button>
+
+        <nav class="nav" id="menu-principal" aria-label="Principal">
+          <ul class="nav__list">
+            <li><a class="nav__link" href="{% url 'index' %}"{% if current == 'index' %} aria-current="page"{% endif %}>Home</a></li>
+            <li><a class="nav__link" href="{% url 'sobre' %}"{% if current == 'sobre' %} aria-current="page"{% endif %}>Sobre</a></li>
+            <li><a class="nav__link" href="{% url 'servicos' %}"{% if current == 'servicos' %} aria-current="page"{% endif %}>Serviços</a></li>
+            <li><a class="nav__link" href="{% url 'contato' %}"{% if current == 'contato' %} aria-current="page"{% endif %}>Contato</a></li>
+            <li><a class="nav__link" href="{% url 'criptografia' %}"{% if current == 'criptografia' %} aria-current="page"{% endif %}>Criptografia</a></li>
+          </ul>
+          <ul class="nav__auth">
+            <li data-auth-nav>
+              {% if user.is_authenticated %}
+              {% if user.is_staff %}<a class="nav__link" href="{% url 'painel' %}">Painel</a>{% else %}<a class="nav__link" href="{% url 'minhas_reservas' %}">Minhas reservas</a>{% endif %}
+              {% else %}
+              <a class="nav__link" href="{% url 'entrar' %}"{% if current == 'entrar' %} aria-current="page"{% endif %}>Entrar</a>
+              <a class="btn btn--ghost btn--sm" href="{% url 'cadastro' %}"{% if current == 'cadastro' %} aria-current="page"{% endif %}>Criar conta</a>
+              {% endif %}
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+    {% endwith %}
+
+    <main id="main" tabindex="-1">
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+      <div class="container">
+        <div class="site-footer__grid">
+          <div>
+            <h2>CT Novos Talentos</h2>
+            <p class="muted">Futebol, escolinha e formação de novos talentos em Rio Claro há mais de 30 anos.</p>
+            <p class="site-footer__cta"><a class="btn btn--sm" href="{% url 'reservar' %}">{% if user.is_staff %}Bloquear horário{% else %}Reservar horário{% endif %}</a></p>
+          </div>
+          <div>
+            <h2>Onde estamos</h2>
+            <address>
+              Av. 61, nº 1269<br />
+              Rio Claro, São Paulo<br />
+              CEP 13501-560
+            </address>
+          </div>
+          <div>
+            <h2>Horário</h2>
+            <p class="muted">Segunda a sexta: 18h às 23h</p>
+          </div>
+          <div>
+            <h2>Fale com a gente</h2>
+            <ul>
+              <li>
+                <a class="social" href="https://wa.me/5519999117711" target="_blank" rel="noopener">
+                  <svg class="icon icon--fill" aria-hidden="true"><use href="#i-whatsapp"></use></svg>
+                  (19) 99911-7711<span class="visually-hidden"> no WhatsApp (abre em nova aba)</span>
+                </a>
+              </li>
+              <li>
+                <a class="social" href="https://www.instagram.com/ctnovostalentos/" target="_blank" rel="noopener">
+                  <svg class="icon icon--fill" aria-hidden="true"><use href="#i-instagram"></use></svg>
+                  @ctnovostalentos<span class="visually-hidden"> no Instagram (abre em nova aba)</span>
+                </a>
+              </li>
+              <li><a href="{% url 'contato' %}">Página de contato</a></li>
+              <li><a href="{% url 'criptografia' %}">Como protegemos seus dados</a></li>
+            </ul>
+          </div>
+        </div>
+        <p class="site-footer__credits">
+          Site desenvolvido por alunos da UNIP: Lucas Balbino De Souza, Joao Victor Paulino Vieira,
+          José Alexandre Rosolen Alvarenga e Guilherme Rocha Odorissi.
+        </p>
+      </div>
+    </footer>
+
+    <div id="toasts" class="toasts" aria-live="polite"></div>
+
+    <script type="module">
+      import { initMenu } from "{% static 'js/ui.js' %}";
+      import { initAuthNav } from "{% static 'js/auth.js' %}";
+      initMenu();
+      initAuthNav();
+    </script>
+    {% block scripts %}{% endblock %}
+  </body>
+</html>

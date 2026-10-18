@@ -1,0 +1,743 @@
+/* ==========================================================================
+   Criptografia visível: tokens, anatomia, demonstração (/criptografia/) e KPIs.
+   Cores dos 5 pedaços do token Fernet (texto >= 7:1 sobre turf #142017):
+   versão = flood, timestamp = sky, IV = lilac, texto cifrado = grass, HMAC = danger.
+   ========================================================================== */
+:root {
+  --font-mono: ui-monospace, "Cascadia Mono", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --c-sky: #8fc9ff;
+  --c-lilac: #c9b0ff;
+}
+
+/* ---------- token Fernet (cards, listas, sucesso) ---------- */
+.ctoken {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.ctoken__label {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.ctoken__value {
+  display: block;
+  min-width: 0;
+  padding: 0.2rem var(--s-2);
+  border-radius: var(--r-sm);
+  background: rgba(122, 196, 0, 0.08);
+  color: var(--c-chalk);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  word-break: break-all;
+}
+
+.ctoken--compact:not([data-expanded="true"]) .ctoken__value {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ctoken__tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-3);
+  font-size: var(--fs-xs);
+}
+
+.ctoken__btn {
+  min-height: 1.75rem;
+}
+
+.ctoken__empty {
+  font-size: var(--fs-xs);
+}
+
+.order__contact {
+  display: grid;
+  gap: var(--s-2);
+  align-items: start;
+  min-width: 0;
+}
+
+.order__decrypt {
+  justify-self: start;
+}
+
+.order__revealed-title {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--c-flood);
+}
+
+.order__pair {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s-1) var(--s-2);
+}
+
+.order__before {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  overflow-wrap: anywhere;
+}
+
+.order__arrow {
+  color: var(--c-flood);
+  font-weight: 700;
+}
+
+.order__after {
+  color: var(--text);
+  font-weight: 600;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.booking-card__crypto,
+.success__crypto {
+  display: grid;
+  gap: var(--s-2);
+  min-width: 0;
+  padding-top: var(--s-3);
+  border-top: 1px dashed var(--chalk-line);
+}
+
+.booking-card__crypto-note {
+  font-size: var(--fs-xs);
+}
+
+.booking-card__crypto-note a,
+.success__crypto a,
+.cipher-intro a,
+[data-my-data] a {
+  color: var(--accent);
+}
+
+/* ---------- anatomia ---------- */
+.anatomy {
+  display: grid;
+  gap: var(--s-3);
+  margin: var(--s-4) 0 0;
+  padding: var(--s-4);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  min-width: 0;
+}
+
+.anatomy__title {
+  font-weight: 700;
+}
+
+.anatomy__token {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  line-height: 1.7;
+  word-break: break-all;
+}
+
+.anatomy__part {
+  padding-block: 0.1em;
+  border-bottom: 3px solid currentColor;
+}
+
+.anatomy__part.is-tampered {
+  background: rgba(255, 138, 122, 0.22);
+}
+
+.anatomy--version { color: var(--c-flood); }
+.anatomy--timestamp { color: var(--c-sky); }
+.anatomy--iv { color: var(--c-lilac); }
+.anatomy--ciphertext { color: var(--c-grass); }
+.anatomy--hmac { color: var(--c-danger); }
+.anatomy--pad { color: var(--text-muted); border-bottom-style: dotted; }
+
+.anatomy__bar {
+  display: flex;
+  height: 0.85rem;
+  gap: 2px;
+  border-radius: var(--r-pill);
+  overflow: hidden;
+}
+
+.anatomy__cell {
+  flex-basis: 0;
+  min-width: 0.6rem;
+  background: currentColor;
+}
+
+.anatomy__legend {
+  display: grid;
+  gap: var(--s-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 48em) {
+  .anatomy__legend {
+    grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
+  }
+}
+
+.anatomy__item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: var(--s-2);
+  align-content: start;
+  font-size: var(--fs-sm);
+  min-width: 0;
+}
+
+.anatomy__item > :not(.anatomy__swatch) {
+  grid-column: 2;
+}
+
+.anatomy__swatch {
+  grid-row: 1 / span 3;
+  width: 0.75rem;
+  height: 0.75rem;
+  margin-top: 0.35rem;
+  border-radius: 3px;
+  background: currentColor;
+}
+
+.anatomy__name {
+  color: var(--text);
+}
+
+.anatomy__size {
+  color: var(--text-muted);
+}
+
+.anatomy__detail {
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.anatomy__help {
+  font-size: var(--fs-xs);
+}
+
+/* ---------- página /criptografia/ ---------- */
+.crypto {
+  display: grid;
+  gap: var(--s-6);
+}
+
+.crypto > * {
+  min-width: 0;
+}
+
+.crypto-warning {
+  display: grid;
+  gap: var(--s-2);
+  max-width: var(--measure);
+  padding: var(--s-4) var(--s-5);
+  border: 2px solid var(--c-flood);
+  border-radius: var(--r-md);
+  background: rgba(244, 211, 94, 0.07);
+}
+
+.crypto-warning__title {
+  color: var(--c-flood);
+  font-size: var(--fs-xl);
+}
+
+.crypto-tabs {
+  margin-bottom: 0;
+}
+
+.demo {
+  display: grid;
+  gap: var(--s-5);
+}
+
+.demo > * {
+  min-width: 0;
+}
+
+.demo__intro {
+  max-width: var(--measure);
+  color: var(--text-muted);
+}
+
+.demo__grid {
+  display: grid;
+  gap: var(--s-6);
+  align-items: start;
+}
+
+@media (min-width: 60em) {
+  .demo__grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+}
+
+.demo__form {
+  max-width: 36rem;
+  min-width: 0;
+}
+
+.demo__form--wide {
+  max-width: 44rem;
+}
+
+.demo textarea {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+}
+
+.demo__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.demo__status {
+  min-height: 1.5em;
+  font-size: var(--fs-sm);
+  color: var(--text-muted);
+}
+
+.demo__status--ok { color: var(--c-grass); }
+.demo__status--warn { color: var(--c-flood); }
+.demo__status--error { color: var(--c-danger); }
+
+.demo__result {
+  display: grid;
+  gap: var(--s-2);
+  max-width: 44rem;
+  padding: var(--s-4);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  background: var(--surface);
+}
+
+.demo__result[data-state="fail"] {
+  border-left-color: var(--c-danger);
+}
+
+.demo__result-label {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.demo__output {
+  font-family: var(--font-mono);
+  font-size: var(--fs-lg);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.demo__token {
+  word-break: break-all;
+}
+
+.demo__subtitle {
+  font-size: var(--fs-xl);
+  margin-top: var(--s-4);
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+}
+
+.stepper__btn {
+  min-width: 2.75rem;
+  font-size: 1.25rem;
+}
+
+.stepper__range {
+  flex: 1;
+  min-width: 0;
+  accent-color: var(--accent);
+}
+
+.stepper__value {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  letter-spacing: 0.02em;
+  white-space: pre;
+}
+
+/* Roda de César = o círculo central do campo, em giz, com a marca do pênalti no meio */
+.demo__visual {
+  display: grid;
+  gap: var(--s-4);
+  justify-items: center;
+  min-width: 0;
+  width: 100%;
+}
+
+.wheel {
+  --size: min(17rem, 76vw);
+  position: relative;
+  width: var(--size);
+  height: var(--size);
+  border: 2px solid var(--chalk-line);
+  border-radius: 50%;
+}
+
+.wheel::before {
+  content: "";
+  position: absolute;
+  inset: 17%;
+  border: 2px solid var(--chalk-line);
+  border-radius: 50%;
+}
+
+.wheel__ring {
+  position: absolute;
+  inset: 0;
+}
+
+.wheel__ring--cipher {
+  transform: rotate(calc(var(--turn, 0) * 360deg / 26));
+  transition: transform var(--t-med) var(--ease-out);
+}
+
+.wheel--still .wheel__ring--cipher {
+  transition: none;
+}
+
+.wheel__letter {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1.4rem;
+  height: 1.4rem;
+  margin: -0.7rem 0 0 -0.7rem;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.wheel__ring--plain .wheel__letter {
+  color: var(--c-chalk);
+  transform: rotate(calc(var(--i) * 360deg / 26)) translateY(calc(var(--size) * -0.43));
+}
+
+.wheel__ring--cipher .wheel__letter {
+  color: var(--c-grass);
+  transform: rotate(calc(var(--i) * 360deg / 26)) translateY(calc(var(--size) * -0.26));
+}
+
+.wheel__pointer {
+  position: absolute;
+  left: 50%;
+  top: 2%;
+  width: 2rem;
+  height: 34%;
+  margin-left: -1rem;
+  border: 2px solid var(--c-flood);
+  border-radius: var(--r-pill);
+  pointer-events: none;
+}
+
+.wheel__spot {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 0.6rem;
+  height: 0.6rem;
+  margin: -0.3rem 0 0 -0.3rem;
+  border-radius: 50%;
+  background: var(--c-chalk);
+}
+
+.abc-scroll,
+.cstep__scroll,
+.table-scroll {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.abc {
+  border-collapse: collapse;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  margin-inline: auto;
+}
+
+.abc th {
+  padding-right: var(--s-2);
+  font-family: var(--font-body);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  color: var(--text-muted);
+  text-align: left;
+}
+
+.abc td {
+  min-width: 1.1rem;
+  padding: 0.15rem 0.05rem;
+  text-align: center;
+}
+
+.abc__cipher td {
+  color: var(--c-grass);
+  border-top: 1px solid var(--chalk-line);
+}
+
+.cstep {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+}
+
+.cstep th,
+.cstep td {
+  padding: var(--s-1) var(--s-3);
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.cstep th {
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.cstep__char,
+.cstep__out {
+  font-family: var(--font-mono);
+}
+
+.cstep__out {
+  color: var(--c-grass);
+  font-weight: 700;
+}
+
+.cstep__skip td {
+  color: var(--text-muted);
+}
+
+.brute {
+  display: grid;
+  gap: 2px;
+  margin: var(--s-3) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 48em) {
+  .brute {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--s-4);
+  }
+}
+
+.brute__item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s-1) var(--s-3);
+  padding: var(--s-1) var(--s-2);
+  border-radius: var(--r-sm);
+  min-width: 0;
+}
+
+.brute__item.is-best {
+  background: rgba(244, 211, 94, 0.1);
+  box-shadow: inset 3px 0 0 var(--c-flood);
+}
+
+.brute__k {
+  min-width: 3.5rem;
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+}
+
+.brute__text {
+  font-family: var(--font-mono);
+  font-size: var(--fs-sm);
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+
+.crypto-real {
+  display: grid;
+  gap: var(--s-3);
+  padding-top: var(--s-6);
+  border-top: 2px solid var(--chalk-line);
+}
+
+.crypto-real > * {
+  min-width: 0;
+}
+
+.crypto-real__title {
+  font-size: var(--fs-2xl);
+}
+
+.crypto-real__sub {
+  margin-top: var(--s-4);
+  font-size: var(--fs-xl);
+}
+
+.crypto-table {
+  width: 100%;
+  min-width: 34rem;
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+}
+
+.crypto-table th,
+.crypto-table td {
+  padding: var(--s-2) var(--s-3);
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+}
+
+.crypto-table thead th {
+  color: var(--text-muted);
+}
+
+.lock {
+  display: inline-block;
+  padding: 0.1rem var(--s-2);
+  border-radius: var(--r-pill);
+  border: 1px solid var(--chalk-line);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+.lock--on {
+  border-color: var(--c-grass);
+  color: var(--c-grass);
+}
+
+.lock--on::before {
+  content: "🔒 ";
+}
+
+.crypto-real__key code {
+  font-family: var(--font-mono);
+}
+
+.mine {
+  display: grid;
+  gap: var(--s-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.mine__item {
+  display: grid;
+  gap: var(--s-2);
+  min-width: 0;
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface);
+}
+
+/* ---------- painel: aba Criptografia ---------- */
+.cipher-intro {
+  max-width: var(--measure);
+  margin-bottom: var(--s-4);
+}
+
+/* ---------- painel: KPIs acima do Kanban ---------- */
+.kpis {
+  margin-bottom: var(--s-5);
+}
+
+.kpis__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--s-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 48em) {
+  .kpis__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 72em) {
+  .kpis__grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+.kpi {
+  display: grid;
+  align-content: start;
+  gap: var(--s-1);
+  min-width: 0;
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--accent);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+}
+
+.kpi--flood {
+  border-top-color: var(--c-flood);
+}
+
+.kpi__value {
+  font-family: var(--font-display);
+  font-size: clamp(1.75rem, 3vw + 1rem, 2.4rem);
+  line-height: 1;
+  letter-spacing: 0.02em;
+  overflow-wrap: anywhere;
+}
+
+.kpi__value.skeleton {
+  display: block;
+  height: 2.1rem;
+  width: 60%;
+}
+
+.kpi__label {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  line-height: 1.35;
+}
+
+.kpi__meter {
+  height: 4px;
+  margin-top: var(--s-1);
+  border-radius: var(--r-pill);
+  background: var(--border);
+  overflow: hidden;
+}
+
+.kpi__fill {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+}
+
+.kpi--error {
+  grid-column: 1 / -1;
+  border-top-color: var(--c-danger);
+}
+
+.kpis__note {
+  margin-top: var(--s-2);
+  font-size: var(--fs-xs);
+}
