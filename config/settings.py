@@ -83,7 +83,8 @@ else:
             ) from exc
 
 ALLOWED_HOSTS = env_list(
-    "ALLOWED_HOSTS", "localhost,127.0.0.1,testserver" if DEV_MODE else ""
+    "ALLOWED_HOSTS",
+    "localhost,127.0.0.1,testserver,ct-novos-talentos.onrender.com"
 )
 
 INSTALLED_APPS = [
