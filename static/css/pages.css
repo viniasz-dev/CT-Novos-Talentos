@@ -2135,3 +2135,35 @@
   flex-wrap: wrap;
   gap: var(--s-2);
 }
+
+/* ---------- Texto corrido (política de cookies) ---------- */
+.prose {
+  max-width: 46rem;
+}
+
+.prose h2 {
+  margin-top: var(--s-6);
+  font-size: var(--fs-lg);
+}
+
+.prose h2:first-child {
+  margin-top: 0;
+}
+
+.prose p,
+.prose li {
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.prose ul {
+  padding-left: 1.25rem;
+}
+
+.prose li + li {
+  margin-top: var(--s-2);
+}
+
+.prose strong {
+  color: var(--text);
+}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Política de cookies | CT Novos Talentos{% endblock %}
+{% block description %}Entenda o que são cookies, quais usamos no site do CT Novos Talentos e como controlar suas escolhas.{% endblock %}
+{% block body_class %}page-cookies{% endblock %}
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <h1>Política de cookies</h1>
+    <p>Última atualização: outubro de 2026.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="cookies-oque">
+  <div class="container prose">
+    <h2 id="cookies-oque">1. O que são cookies</h2>
+    <p>Cookies são pequenos arquivos de texto que o site grava no seu navegador quando você o visita. Eles permitem que o site reconheça o seu navegador em acessos seguintes, lembre escolhas e funcione com segurança. Existem também tecnologias parecidas, como o armazenamento local do navegador (<em>localStorage</em>), que guardam pequenas informações no seu próprio aparelho.</p>
+
+    <h2>2. Por que usamos cookies</h2>
+    <p>O site do CT Novos Talentos usa cookies apenas para o que é necessário ao seu funcionamento: manter você conectado depois do login e proteger os formulários contra ataques. Não usamos cookies de publicidade, não vendemos dados e não criamos perfil de comportamento dos visitantes.</p>
+
+    <h2>3. Cookies que usamos</h2>
+    <ul>
+      <li><strong>sessionid</strong> (necessário): identifica a sua sessão depois do login, para que você não precise entrar de novo a cada página. É protegido contra leitura por scripts (<em>HttpOnly</em>), só trafega em conexão segura (<em>Secure</em>) e expira em até duas semanas ou quando você sai da conta.</li>
+      <li><strong>csrftoken</strong> (necessário): protege os formulários e os pedidos de reserva contra o envio de ações em seu nome por sites mal-intencionados (ataque conhecido como CSRF).</li>
+      <li><strong>cookie-consent</strong> (armazenamento local): guarda apenas a sua escolha neste aviso, "aceito" ou "recusado", para que a pergunta não apareça em toda visita.</li>
+    </ul>
+
+    <h2>4. Serviços de terceiros</h2>
+    <p>Algumas páginas carregam conteúdo de terceiros, que podem gravar seus próprios cookies conforme as políticas de cada empresa: as fontes de texto do Google Fonts e o mapa do Google Maps exibido na página de contato. Esses serviços são usados apenas para a aparência do site e para mostrar a localização do CT.</p>
+
+    <h2>5. Dados pessoais e segurança</h2>
+    <p>Os cookies listados não guardam seu nome, e-mail ou telefone. Os dados informados em um pedido de reserva, como o contato e a mensagem, são protegidos por criptografia antes de serem armazenados, e a comunicação entre o seu navegador e o site é feita por conexão segura (HTTPS). O tratamento dos dados pessoais segue a Lei Geral de Proteção de Dados (LGPD, Lei nº 13.709/2018).</p>
+
+    <h2>6. Como controlar os cookies</h2>
+    <p>Você pode mudar sua escolha a qualquer momento apagando os dados do site nas configurações do navegador, o que faz o aviso aparecer de novo. Também é possível bloquear ou apagar cookies pelo navegador. Se você bloquear os cookies necessários, não será possível entrar na conta nem enviar pedidos de reserva, pois o site depende deles para funcionar.</p>
+    <p>Mesmo que você escolha "Recusar" no aviso, os cookies estritamente necessários continuam sendo usados, porque sem eles o login e a proteção dos formulários não funcionam.</p>
+
+    <h2>7. Alterações nesta política</h2>
+    <p>Podemos atualizar esta política quando o site mudar. A data de atualização fica no topo desta página.</p>
+
+    <h2>8. Contato</h2>
+    <p>Dúvidas sobre cookies ou sobre o tratamento dos seus dados podem ser enviadas pela <a href="{% url 'contato' %}">página de contato</a>.</p>
+  </div>
+</section>
+{% endblock %}

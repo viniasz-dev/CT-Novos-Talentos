@@ -96,6 +96,7 @@
                 </a>
               </li>
               <li><a href="{% url 'contato' %}">Página de contato</a></li>
+              <li><a href="{% url 'cookies' %}">Política de cookies</a></li>
             </ul>
           </div>
         </div>
@@ -113,7 +114,7 @@
     <div id="toasts" class="toasts" aria-live="polite"></div>
 
     <div class="cookie-banner" data-cookie-banner role="dialog" aria-label="Aviso de cookies" hidden>
-      <p>Usamos cookies essenciais para manter seu login e proteger o site. Você aceita o uso de cookies?</p>
+      <p>Usamos cookies essenciais para manter seu login e proteger o site. Você aceita o uso de cookies? <a href="{% url 'cookies' %}">Saiba mais</a></p>
       <div class="cookie-banner__actions">
         <button class="btn btn--sm" type="button" data-cookie-choice="aceito">Aceitar</button>
         <button class="btn btn--sm btn--ghost" type="button" data-cookie-choice="recusado">Recusar</button>
