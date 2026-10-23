@@ -129,7 +129,7 @@ test("staff mode reads the day from the admin agenda; booked shows Reservado and
   assert.match(slot(3).textContent, /Reservado/);
   assert.ok(!slot(1).hasAttribute("disabled"), "blocked slot is clickable for staff");
   assert.match(slot(1).getAttribute("aria-label"), /bloqueado: Manutenção <b>\. Ver bloqueio/);
-  assert.match(q("[data-slots-hint]").textContent, /bloquear, ou num bloqueado/);
+  assert.match(q("[data-slots-hint]").textContent, /Dia todo.*ou num bloqueado/);
 });
 
 test("full days open in staff mode (blocks to release live there)", async () => {

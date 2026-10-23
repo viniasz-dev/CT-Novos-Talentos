@@ -145,7 +145,7 @@ export async function initBooking(root = globalThis.document.getElementById("res
   const kindButtons = [...root.querySelectorAll("[data-kind]")];
   let kind = "avulsa";
   const kindValue = () => kind;
-  const maxSel = () => (kind === "torneio" ? 24 : MAX_HOURS);
+  const maxSel = () => (blockMode || kind === "torneio" ? 24 : MAX_HOURS);
   const overlaps = (a, b) => a.start < b.end && a.end > b.start;
   // Torneio envia o carrinho mais a seleção ainda não adicionada.
   function torneioItems() {
@@ -574,7 +574,7 @@ export async function initBooking(root = globalThis.document.getElementById("res
     const anyFree = s.slots.some((x) => x.state === "free");
     const anyBlocked = s.slots.some((x) => x.state === "blocked");
     if (blockMode) {
-      if (anyFree) return `Toque em até ${MAX_HOURS} horários livres seguidos para bloquear${anyBlocked ? ", ou num bloqueado para ver e liberar" : ""}.`;
+      if (anyFree) return `Toque nos horários livres seguidos que quer bloquear (ou em "Dia todo")${anyBlocked ? ", ou num bloqueado para ver e liberar" : ""}.`;
       return anyBlocked ? "Toque num horário bloqueado para ver o motivo ou liberar." : "Não há horários livres neste dia. Escolha outro dia.";
     }
     if (kind === "torneio") return anyFree ? 'Toque nos horários seguidos que quiser ou em "Dia todo".' : "Não há horários livres neste dia. Escolha outro dia.";
@@ -601,7 +601,7 @@ export async function initBooking(root = globalThis.document.getElementById("res
   function pickSlot(i) {
     blocks?.close();
     const before = s.selected;
-    const next = toggleSlot(before, i, s.slots, blockMode ? MAX_HOURS : maxSel());
+    const next = toggleSlot(before, i, s.slots, maxSel());
     const blockedAtMax = next.length === before.length && before.length >= MAX_HOURS && !before.includes(i);
     const adjacent = before.length && (i === Math.min(...before) - 1 || i === Math.max(...before) + 1);
     s.selected = next;
