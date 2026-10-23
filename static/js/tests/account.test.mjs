@@ -117,7 +117,6 @@ test("renders bookings with status badges and cancel only where allowed", async 
   // contato e mensagem aparecem criptografados, com link para a página explicativa
   assert.match(items[0].textContent, /🔒 Contato \(criptografado\)gAAAAABpQ7xYz-CONTATO-TOKEN-0123…/);
   assert.match(items[0].textContent, /Mensagem \(criptografada\)/);
-  assert.ok(items[0].querySelector("[data-protected]").querySelector('a[href="/criptografia/"]'));
   assert.doesNotMatch(items[0].textContent, /••••••/);
   assert.equal(items[0].querySelector('button[data-action="contact"]'), null, "clients cannot decrypt");
 });

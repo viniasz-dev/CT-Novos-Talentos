@@ -5,7 +5,7 @@ from django.test import TestCase
 
 PAGES = [
     "/", "/sobre/", "/servicos/", "/contato/", "/entrar/", "/cadastro/",
-    "/reservar/", "/minhas-reservas/", "/painel/", "/criptografia/",
+    "/reservar/", "/minhas-reservas/", "/painel/",
 ]
 
 REDESIGNED = ["/", "/sobre/", "/servicos/", "/contato/", "/entrar/", "/cadastro/"]
@@ -314,23 +314,8 @@ class StaffPagesTests(TestCase):
 
 
 class CryptoPageTests(TestCase):
-    def test_crypto_page_has_warning_tabs_and_script(self):
-        r = self.client.get("/criptografia/")
-        self.assertContains(r, "não são seguras")
-        self.assertContains(r, 'role="tablist"')
-        for tab in ("cesar", "vigenere", "fernet"):
-            self.assertContains(r, f'data-tab="{tab}"')
-        self.assertContains(r, "js/crypto-demo.js")
-        self.assertContains(r, "AES-128")
-        self.assertIsNotNone(finders.find("js/crypto-demo.js"))
-        self.assertIsNotNone(finders.find("js/cipher-view.js"))
-        self.assertIsNotNone(finders.find("js/kpis.js"))
-
-    def test_crypto_link_in_nav_and_footer_everywhere(self):
-        for path in PAGES:
-            with self.subTest(path=path):
-                body = self.client.get(path).content.decode()
-                self.assertGreaterEqual(body.count('href="/criptografia/"'), 2)
+    def test_crypto_page_removed(self):
+        self.assertEqual(self.client.get("/criptografia/").status_code, 404)
 
     def test_painel_has_crypto_tab_and_kpis(self):
         r = self.client.get("/painel/")

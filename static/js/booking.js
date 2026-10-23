@@ -22,7 +22,7 @@ import {
   prefersReducedMotion,
 } from "./ui.js";
 import { todayISO, normalizeFields, photoUrl } from "./home.js";
-import { bookingTokens, HOW_IT_WORKS_URL } from "./cipher-view.js";
+import { bookingTokens } from "./cipher-view.js";
 import {
   buildMonthGrid,
   toggleSlot,
@@ -656,7 +656,6 @@ export async function initBooking(root = globalThis.document.getElementById("res
             { class: "success__crypto", "data-protected": "" },
             el("p", { class: "muted", text: "Seu contato e sua mensagem já foram guardados criptografados. É assim que eles ficam no banco:" }),
             ...bookingTokens(booking),
-            el("p", { class: "muted" }, el("a", { href: HOW_IT_WORKS_URL }, "Como funciona a criptografia")),
           )
         : null,
       el(

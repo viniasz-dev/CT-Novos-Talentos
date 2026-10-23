@@ -172,7 +172,7 @@ BUSINESS_HOURS = {d: (18, 23) for d in range(5)}
 BOOKING_MAX_HOURS = 4
 
 # Notificacoes
-STAFF_NOTIFY_EMAIL = os.environ.get("STAFF_NOTIFY_EMAIL", "")
+STAFF_NOTIFY_EMAIL = os.environ.get("STAFF_NOTIFY_EMAIL", "ctnovostalentos@hotmail.com")
 WHATSAPP_ENABLED = env_bool("WHATSAPP_ENABLED", False)
 DEFAULT_FROM_EMAIL = os.environ.get(
     "DEFAULT_FROM_EMAIL", "CT Novos Talentos <nao-responda@localhost>"

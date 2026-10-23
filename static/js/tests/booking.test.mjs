@@ -344,7 +344,6 @@ test("successful submit posts the range and shows the pending confirmation", asy
   assert.match(success.textContent, /Contato \(criptografado\)/);
   assert.match(success.textContent, /gAAAAABtoken-do-contato-01234567…/);
   assert.doesNotMatch(success.textContent, /90000-0000/);
-  assert.ok(success.querySelector('a[href="/criptografia/"]'));
   assert.equal(q(root, "#form-reserva").hidden, true);
 });
 

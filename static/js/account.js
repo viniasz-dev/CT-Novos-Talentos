@@ -12,7 +12,7 @@ import {
   inlineConfirm,
   prefersReducedMotion,
 } from "./ui.js";
-import { bookingTokens, HOW_IT_WORKS_URL } from "./cipher-view.js";
+import { bookingTokens } from "./cipher-view.js";
 
 export const STATUSES = ["pendente", "aprovado", "recusado", "cancelado"];
 
@@ -49,8 +49,7 @@ export function protectedBox(booking) {
     el(
       "p",
       { class: "booking-card__crypto-note muted" },
-      `Guardado com ${booking?.protected?.algorithm || "Fernet"}. Só a equipe consegue decifrar, e cada acesso fica registrado. `,
-      el("a", { href: HOW_IT_WORKS_URL }, "Como funciona"),
+      `Guardado com ${booking?.protected?.algorithm || "Fernet"}. Só a equipe consegue decifrar, e cada acesso fica registrado.`,
     ),
   );
 }

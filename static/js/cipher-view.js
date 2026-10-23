@@ -4,7 +4,6 @@
 import { el, toast } from "./ui.js";
 
 export const TOKEN_PREVIEW = 32;
-export const HOW_IT_WORKS_URL = "/criptografia/";
 
 /** Primeiros `n` caracteres + "…" (token curto volta inteiro). */
 export function truncateToken(token, n = TOKEN_PREVIEW) {
