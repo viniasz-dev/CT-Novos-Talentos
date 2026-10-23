@@ -97,6 +97,7 @@
               </li>
               <li><a href="{% url 'contato' %}">Página de contato</a></li>
               <li><a href="{% url 'cookies' %}">Política de cookies</a></li>
+              <li><button class="link-button" type="button" data-cookie-reopen>Preferências de cookies</button></li>
             </ul>
           </div>
         </div>
@@ -130,13 +131,18 @@
       const banner = document.querySelector("[data-cookie-banner]");
       let chosen = null;
       try { chosen = localStorage.getItem("cookie-consent"); } catch {}
-      if (banner && !chosen) {
-        banner.hidden = false;
+      if (banner) {
+        banner.hidden = Boolean(chosen);
         banner.addEventListener("click", (event) => {
           const choice = event.target.closest("[data-cookie-choice]")?.dataset.cookieChoice;
           if (!choice) return;
           try { localStorage.setItem("cookie-consent", choice); } catch {}
           banner.hidden = true;
+        });
+        document.querySelector("[data-cookie-reopen]")?.addEventListener("click", () => {
+          try { localStorage.removeItem("cookie-consent"); } catch {}
+          banner.hidden = false;
+          banner.querySelector("button")?.focus();
         });
       }
     </script>

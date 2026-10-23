@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block title %}Política de cookies | CT Novos Talentos{% endblock %}
-{% block description %}Entenda o que são cookies, quais usamos no site do CT Novos Talentos e como controlar suas escolhas.{% endblock %}
+{% block description %}Entenda o que são cookies, quais usamos no site do CT Novos Talentos, por quanto tempo ficam guardados e como controlar suas escolhas.{% endblock %}
 {% block body_class %}page-cookies{% endblock %}
 {% block content %}
 <section class="page-hero">
@@ -10,36 +10,146 @@
   </div>
 </section>
 
-<section class="section" aria-labelledby="cookies-oque">
+<section class="section" aria-labelledby="cookies-indice">
   <div class="container prose">
-    <h2 id="cookies-oque">1. O que são cookies</h2>
-    <p>Cookies são pequenos arquivos de texto que o site grava no seu navegador quando você o visita. Eles permitem que o site reconheça o seu navegador em acessos seguintes, lembre escolhas e funcione com segurança. Existem também tecnologias parecidas, como o armazenamento local do navegador (<em>localStorage</em>), que guardam pequenas informações no seu próprio aparelho.</p>
+    <h2 id="cookies-indice">Neste documento</h2>
+    <ol>
+      <li><a href="#oque-sao">O que são cookies</a></li>
+      <li><a href="#por-que">Por que usamos cookies</a></li>
+      <li><a href="#tipos">Tipos de cookies</a></li>
+      <li><a href="#lista">Cookies que usamos neste site</a></li>
+      <li><a href="#terceiros">Serviços de terceiros</a></li>
+      <li><a href="#duracao">Por quanto tempo ficam guardados</a></li>
+      <li><a href="#dados">Dados pessoais e segurança</a></li>
+      <li><a href="#direitos">Seus direitos (LGPD)</a></li>
+      <li><a href="#controle">Como controlar os cookies</a></li>
+      <li><a href="#navegadores">Passo a passo nos navegadores</a></li>
+      <li><a href="#menores">Crianças e adolescentes</a></li>
+      <li><a href="#glossario">Glossário</a></li>
+      <li><a href="#duvidas">Perguntas frequentes</a></li>
+      <li><a href="#alteracoes">Alterações desta política</a></li>
+      <li><a href="#contato-cookies">Contato</a></li>
+    </ol>
 
-    <h2>2. Por que usamos cookies</h2>
-    <p>O site do CT Novos Talentos usa cookies apenas para o que é necessário ao seu funcionamento: manter você conectado depois do login e proteger os formulários contra ataques. Não usamos cookies de publicidade, não vendemos dados e não criamos perfil de comportamento dos visitantes.</p>
+    <h2 id="oque-sao">1. O que são cookies</h2>
+    <p>Cookies são pequenos arquivos de texto que um site grava no seu navegador quando você o visita. Eles funcionam como uma "etiqueta" que permite ao site reconhecer o mesmo navegador em acessos seguintes, lembrar escolhas e funcionar com segurança.</p>
+    <p>Existem também tecnologias parecidas, como o armazenamento local do navegador (<em>localStorage</em>), que guarda pequenas informações no seu próprio aparelho, sem enviá-las ao servidor a cada acesso. Nesta política, quando falamos em "cookies", incluímos essas tecnologias, sempre que for relevante.</p>
+    <p>Um cookie não é um programa, não executa código e não consegue ler outros arquivos do seu computador. Ele é só um pequeno texto, com um nome, um valor e algumas regras de uso, como a validade e o endereço do site que pode lê-lo.</p>
 
-    <h2>3. Cookies que usamos</h2>
+    <h2 id="por-que">2. Por que usamos cookies</h2>
+    <p>O site do CT Novos Talentos usa cookies apenas para o que é necessário ao seu funcionamento: manter você conectado depois do login e proteger os formulários contra ataques. Sem eles, não seria possível entrar na sua conta, acompanhar suas reservas nem enviar um pedido com segurança.</p>
+    <p>Não usamos cookies de publicidade, não vendemos nem compartilhamos dados com anunciantes e não criamos perfil de comportamento dos visitantes. Também não usamos ferramentas de análise de audiência que acompanhem o que cada pessoa faz no site.</p>
+
+    <h2 id="tipos">3. Tipos de cookies</h2>
+    <p>Para entender melhor, é útil saber que os cookies são classificados de algumas formas:</p>
+    <h3>Quanto à finalidade</h3>
     <ul>
-      <li><strong>sessionid</strong> (necessário): identifica a sua sessão depois do login, para que você não precise entrar de novo a cada página. É protegido contra leitura por scripts (<em>HttpOnly</em>), só trafega em conexão segura (<em>Secure</em>) e expira em até duas semanas ou quando você sai da conta.</li>
-      <li><strong>csrftoken</strong> (necessário): protege os formulários e os pedidos de reserva contra o envio de ações em seu nome por sites mal-intencionados (ataque conhecido como CSRF).</li>
-      <li><strong>cookie-consent</strong> (armazenamento local): guarda apenas a sua escolha neste aviso, "aceito" ou "recusado", para que a pergunta não apareça em toda visita.</li>
+      <li><strong>Estritamente necessários:</strong> permitem funções básicas, como login e segurança. O site não funciona direito sem eles. São os únicos que usamos.</li>
+      <li><strong>De preferências:</strong> lembram escolhas, como idioma ou tema. Neste site, apenas guardamos a sua resposta a este aviso.</li>
+      <li><strong>Estatísticos ou de desempenho:</strong> contam visitas e medem o uso do site. Não usamos.</li>
+      <li><strong>De publicidade:</strong> mostram anúncios com base nos seus interesses. Não usamos.</li>
+    </ul>
+    <h3>Quanto à duração</h3>
+    <ul>
+      <li><strong>De sessão:</strong> desaparecem quando você fecha o navegador.</li>
+      <li><strong>Persistentes:</strong> ficam guardados até uma data de validade ou até você apagá-los.</li>
+    </ul>
+    <h3>Quanto à origem</h3>
+    <ul>
+      <li><strong>Próprios (primários):</strong> criados pelo próprio site que você visita.</li>
+      <li><strong>De terceiros:</strong> criados por outro serviço incorporado à página, como um mapa ou uma fonte de texto.</li>
     </ul>
 
-    <h2>4. Serviços de terceiros</h2>
-    <p>Algumas páginas carregam conteúdo de terceiros, que podem gravar seus próprios cookies conforme as políticas de cada empresa: as fontes de texto do Google Fonts e o mapa do Google Maps exibido na página de contato. Esses serviços são usados apenas para a aparência do site e para mostrar a localização do CT.</p>
+    <h2 id="lista">4. Cookies que usamos neste site</h2>
+    <div class="prose__table-wrap">
+      <table class="prose__table">
+        <caption class="visually-hidden">Cookies e armazenamento local usados no site</caption>
+        <thead>
+          <tr><th scope="col">Nome</th><th scope="col">Finalidade</th><th scope="col">Tipo</th><th scope="col">Validade</th></tr>
+        </thead>
+        <tbody>
+          <tr><th scope="row">sessionid</th><td>Mantém você conectado depois do login.</td><td>Necessário, próprio</td><td>Até 2 semanas ou até sair da conta</td></tr>
+          <tr><th scope="row">csrftoken</th><td>Protege formulários e pedidos contra ações enviadas em seu nome por sites mal-intencionados (ataque CSRF).</td><td>Necessário, próprio</td><td>Até 1 ano</td></tr>
+          <tr><th scope="row">cookie-consent</th><td>Guarda a sua escolha neste aviso: "aceito" ou "recusado".</td><td>Preferência, armazenamento local</td><td>Até você apagar os dados do site</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>O <strong>sessionid</strong> é protegido contra leitura por scripts (atributo <em>HttpOnly</em>), só trafega em conexão segura (atributo <em>Secure</em>) e não é enviado em requisições de outros sites (atributo <em>SameSite</em>). O <strong>csrftoken</strong> também só trafega em conexão segura.</p>
 
-    <h2>5. Dados pessoais e segurança</h2>
-    <p>Os cookies listados não guardam seu nome, e-mail ou telefone. Os dados informados em um pedido de reserva, como o contato e a mensagem, são protegidos por criptografia antes de serem armazenados, e a comunicação entre o seu navegador e o site é feita por conexão segura (HTTPS). O tratamento dos dados pessoais segue a Lei Geral de Proteção de Dados (LGPD, Lei nº 13.709/2018).</p>
+    <h2 id="terceiros">5. Serviços de terceiros</h2>
+    <p>Algumas páginas carregam conteúdo de terceiros, que podem gravar seus próprios cookies conforme as políticas de cada empresa:</p>
+    <ul>
+      <li><strong>Google Fonts:</strong> fornece as fontes de texto usadas no visual do site.</li>
+      <li><strong>Google Maps:</strong> exibe o mapa com a localização do CT na página de contato.</li>
+    </ul>
+    <p>Esses serviços são usados apenas para a aparência do site e para mostrar onde fica o CT. Não controlamos os cookies que o Google possa definir; para saber mais, consulte a política de privacidade da empresa.</p>
 
-    <h2>6. Como controlar os cookies</h2>
-    <p>Você pode mudar sua escolha a qualquer momento apagando os dados do site nas configurações do navegador, o que faz o aviso aparecer de novo. Também é possível bloquear ou apagar cookies pelo navegador. Se você bloquear os cookies necessários, não será possível entrar na conta nem enviar pedidos de reserva, pois o site depende deles para funcionar.</p>
-    <p>Mesmo que você escolha "Recusar" no aviso, os cookies estritamente necessários continuam sendo usados, porque sem eles o login e a proteção dos formulários não funcionam.</p>
+    <h2 id="duracao">6. Por quanto tempo ficam guardados</h2>
+    <p>Os cookies de sessão do login são removidos quando você sai da conta ou depois de até duas semanas sem renovação. O cookie de segurança dos formulários tem validade máxima de um ano. A sua escolha neste aviso fica guardada no navegador até que você apague os dados do site. Se você mudar de aparelho ou de navegador, o aviso aparece novamente.</p>
 
-    <h2>7. Alterações nesta política</h2>
-    <p>Podemos atualizar esta política quando o site mudar. A data de atualização fica no topo desta página.</p>
+    <h2 id="dados">7. Dados pessoais e segurança</h2>
+    <p>Os cookies listados acima não guardam seu nome, e-mail ou telefone: eles guardam apenas identificadores técnicos. Os dados informados em um pedido de reserva, como o contato e a mensagem, são protegidos por criptografia antes de serem armazenados, e a comunicação entre o seu navegador e o site é feita por conexão segura (HTTPS). As senhas são armazenadas apenas como hash, nunca em texto legível.</p>
+    <p>O tratamento dos dados pessoais segue a Lei Geral de Proteção de Dados (LGPD, Lei nº 13.709/2018). Usamos esses dados somente para atender o seu pedido de reserva e para avisar você, por e-mail, sobre a situação dele.</p>
 
-    <h2>8. Contato</h2>
-    <p>Dúvidas sobre cookies ou sobre o tratamento dos seus dados podem ser enviadas pela <a href="{% url 'contato' %}">página de contato</a>.</p>
+    <h2 id="direitos">8. Seus direitos (LGPD)</h2>
+    <p>Como titular dos dados, você pode, a qualquer momento e mediante solicitação:</p>
+    <ul>
+      <li>confirmar que realizamos o tratamento dos seus dados e acessá-los;</li>
+      <li>corrigir dados incompletos, inexatos ou desatualizados;</li>
+      <li>pedir a eliminação dos dados tratados com o seu consentimento;</li>
+      <li>pedir informações sobre com quem os dados são compartilhados;</li>
+      <li>revogar o consentimento dado neste aviso, quando ele for a base do tratamento.</li>
+    </ul>
+    <p>Para exercer qualquer desses direitos, use a <a href="{% url 'contato' %}">página de contato</a>.</p>
+
+    <h2 id="controle">9. Como controlar os cookies</h2>
+    <p>Você pode mudar a sua escolha deste aviso a qualquer momento pelo link <strong>Preferências de cookies</strong>, no rodapé de todas as páginas. Também é possível bloquear ou apagar cookies pelas configurações do navegador.</p>
+    <p>Atenção: se você bloquear os cookies necessários, não será possível entrar na conta nem enviar pedidos de reserva, porque o site depende deles para funcionar. Mesmo que você escolha "Recusar" no aviso, os cookies estritamente necessários continuam sendo usados, pelo mesmo motivo.</p>
+
+    <h2 id="navegadores">10. Passo a passo nos navegadores</h2>
+    <p>Os caminhos abaixo podem variar um pouco conforme a versão do navegador:</p>
+    <ul>
+      <li><strong>Google Chrome:</strong> Configurações, Privacidade e segurança, Cookies e outros dados de sites.</li>
+      <li><strong>Microsoft Edge:</strong> Configurações, Cookies e permissões do site, Gerenciar e excluir cookies e dados do site.</li>
+      <li><strong>Mozilla Firefox:</strong> Configurações, Privacidade e Segurança, Cookies e dados de sites.</li>
+      <li><strong>Safari:</strong> Ajustes, Privacidade, Gerenciar dados de sites.</li>
+      <li><strong>Celular (Android ou iPhone):</strong> as mesmas opções ficam no menu de configurações do navegador usado.</li>
+    </ul>
+    <p>Em todos eles, também é possível navegar em uma janela anônima: os cookies dessa janela são apagados quando ela é fechada.</p>
+
+    <h2 id="menores">11. Crianças e adolescentes</h2>
+    <p>O sistema de reservas é voltado a responsáveis e a maiores de idade. Pedidos de reserva em nome de crianças e adolescentes devem ser feitos pelo responsável legal. Não coletamos intencionalmente dados de menores de 18 anos sem a participação de um responsável.</p>
+
+    <h2 id="glossario">12. Glossário</h2>
+    <dl class="prose__terms">
+      <dt>Cookie</dt><dd>Pequeno arquivo de texto gravado no navegador por um site.</dd>
+      <dt>Sessão</dt><dd>Período em que você está conectado a uma conta, do login até a saída.</dd>
+      <dt>CSRF</dt><dd>Ataque em que um site mal-intencionado tenta enviar ações em nome de um usuário já conectado em outro site.</dd>
+      <dt>HTTPS</dt><dd>Versão protegida do protocolo web, que cifra a comunicação entre o navegador e o site.</dd>
+      <dt>HttpOnly</dt><dd>Atributo que impede que scripts da página leiam o cookie.</dd>
+      <dt>Secure</dt><dd>Atributo que faz o cookie ser enviado somente em conexão HTTPS.</dd>
+      <dt>SameSite</dt><dd>Atributo que limita o envio do cookie em requisições vindas de outros sites.</dd>
+      <dt>Hash</dt><dd>Transformação sem volta de um dado, usada para guardar senhas sem armazená-las em texto legível.</dd>
+      <dt>LGPD</dt><dd>Lei Geral de Proteção de Dados Pessoais, que regula o tratamento de dados pessoais no Brasil.</dd>
+    </dl>
+
+    <h2 id="duvidas">13. Perguntas frequentes</h2>
+    <h3>Preciso aceitar os cookies para usar o site?</h3>
+    <p>Você pode navegar pelas páginas informativas sem entrar na conta. Para fazer login e reservar, os cookies necessários são indispensáveis, e eles funcionam independentemente da sua resposta ao aviso.</p>
+    <h3>Os cookies guardam minha senha?</h3>
+    <p>Não. A senha nunca é gravada em cookies. O cookie de sessão guarda apenas um identificador aleatório.</p>
+    <h3>Vocês usam cookies para anúncios?</h3>
+    <p>Não. Este site não exibe anúncios e não usa cookies de publicidade.</p>
+    <h3>Como saio de uma sessão em um computador compartilhado?</h3>
+    <p>Use o botão <strong>Sair</strong> no menu. Isso encerra a sessão e remove o acesso à sua conta naquele navegador.</p>
+    <h3>Mudei de ideia. Posso trocar a resposta?</h3>
+    <p>Sim. Clique em <strong>Preferências de cookies</strong> no rodapé e escolha novamente.</p>
+
+    <h2 id="alteracoes">14. Alterações desta política</h2>
+    <p>Podemos atualizar esta política quando o site mudar, por exemplo, ao incluir novos recursos que usem outros cookies. A data de atualização fica no topo da página, e mudanças relevantes serão informadas por meio do aviso de cookies.</p>
+
+    <h2 id="contato-cookies">15. Contato</h2>
+    <p>Dúvidas sobre cookies ou sobre o tratamento dos seus dados podem ser enviadas pela <a href="{% url 'contato' %}">página de contato</a>, por telefone ou pelo Instagram do CT.</p>
   </div>
 </section>
 {% endblock %}
