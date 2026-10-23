@@ -112,11 +112,32 @@
 
     <div id="toasts" class="toasts" aria-live="polite"></div>
 
+    <div class="cookie-banner" data-cookie-banner role="dialog" aria-label="Aviso de cookies" hidden>
+      <p>Usamos cookies essenciais para manter seu login e proteger o site. Você aceita o uso de cookies?</p>
+      <div class="cookie-banner__actions">
+        <button class="btn btn--sm" type="button" data-cookie-choice="aceito">Aceitar</button>
+        <button class="btn btn--sm btn--ghost" type="button" data-cookie-choice="recusado">Recusar</button>
+      </div>
+    </div>
+
     <script type="module">
       import { initMenu } from "{% static 'js/ui.js' %}";
       import { initAuthNav } from "{% static 'js/auth.js' %}";
       initMenu();
       initAuthNav();
+      // Aviso de cookies: a escolha fica no navegador; sem localStorage o aviso volta a cada visita.
+      const banner = document.querySelector("[data-cookie-banner]");
+      let chosen = null;
+      try { chosen = localStorage.getItem("cookie-consent"); } catch {}
+      if (banner && !chosen) {
+        banner.hidden = false;
+        banner.addEventListener("click", (event) => {
+          const choice = event.target.closest("[data-cookie-choice]")?.dataset.cookieChoice;
+          if (!choice) return;
+          try { localStorage.setItem("cookie-consent", choice); } catch {}
+          banner.hidden = true;
+        });
+      }
     </script>
     {% block scripts %}{% endblock %}
   </body>
