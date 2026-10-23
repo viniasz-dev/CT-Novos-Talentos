@@ -33,9 +33,15 @@ class RevealContactTests(TestCase):
         self.assertNotIn("99911", str(ev.meta))
         self.assertNotIn("Aniversário", str(ev.meta))
 
+    def test_owner_can_reveal_and_is_audited(self):
+        self.assertEqual(reveal_contact(self.b, self.b.user)["contact"], self.b.get_contact())
+        self.assertEqual(AuditEvent.objects.filter(action="booking.decrypted").count(), 1)
+
     def test_non_staff_forbidden_no_event(self):
+        from accounts.models import User
+        stranger = User.objects.create_user("outro@x.test", "Senha-forte-123", name="Outro")
         with self.assertRaises(ApiError) as ctx:
-            reveal_contact(self.b, self.user)
+            reveal_contact(self.b, stranger)
         self.assertEqual(ctx.exception.code, "forbidden")
         self.assertEqual(ctx.exception.status, 403)
         self.assertEqual(AuditEvent.objects.count(), 0)

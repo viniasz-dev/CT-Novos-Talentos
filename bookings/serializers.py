@@ -37,6 +37,8 @@ def booking_to_dict(booking, admin: bool = False) -> dict:
         "end": _iso(booking.end),
         "status": booking.status,
         "status_label": booking.get_status_display(),
+        "kind": booking.kind,
+        "kind_label": booking.get_kind_display(),
         "contact_masked": booking.contact_masked,
         "message_present": bool(booking.message_enc),
         "contact_token": contact_token,

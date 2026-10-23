@@ -137,6 +137,13 @@ export async function initBooking(root = globalThis.document.getElementById("res
   const contact = ui.form.querySelector('[name="contact"]');
   const message = ui.form.querySelector('[name="message"]');
   const submit = ui.form.querySelector('button[type="submit"]');
+  const daysBox = ui.form.querySelector("[data-torneio-days]");
+  const daysInput = ui.form.querySelector('[name="days"]');
+  const kindValue = () => [...ui.form.querySelectorAll('[name="kind"]')].find((r) => r.checked)?.value || "avulsa";
+  const repeats = () => {
+    const kind = kindValue();
+    return kind === "mensal" ? 4 : kind === "torneio" ? Number(daysInput?.value) || 2 : 1;
+  };
   const staticBase = root.dataset.staticBase || "/static/";
   const fallbackPhoto = root.dataset.fallbackPhoto || "";
   const blockMode = root.dataset.mode === "block";
@@ -593,7 +600,7 @@ export async function initBooking(root = globalThis.document.getElementById("res
   // ---------- resumo ----------
   function renderSummary() {
     const range = selectionToRange(s.selected, s.slots);
-    const total = totalPrice(s.field?.price_per_hour, s.selected.length);
+    const total = totalPrice(s.field?.price_per_hour, s.selected.length * (blockMode ? 1 : repeats()));
     ui.sumField.textContent = s.field?.name || "—";
     ui.sumDate.textContent = s.date ? formatDayLong(s.date) : "—";
     ui.sumTime.textContent = range ? formatTimeRange(range.start, range.end) : "—";
@@ -614,7 +621,7 @@ export async function initBooking(root = globalThis.document.getElementById("res
   }
 
   // ---------- envio ----------
-  function showSuccess(booking, sent) {
+  function showSuccess(booking, sent, count = 1) {
     s.sent = true;
     ui.form.hidden = true;
     const range = sent.range;
@@ -649,6 +656,7 @@ export async function initBooking(root = globalThis.document.getElementById("res
         el("li", { text: booking?.field?.name || sent.field.name || "" }),
         el("li", { text: formatDayLong(booking?.start || sent.date) }),
         el("li", { text: booking?.start && booking?.end ? formatTimeRange(booking.start, booking.end) : formatTimeRange(range.start, range.end) }),
+        count > 1 ? el("li", { text: `${booking?.kind_label || "Série"}: ${count} pedidos criados (um por dia)` }) : null,
       ),
       booking?.contact_token
         ? el(
@@ -692,6 +700,10 @@ export async function initBooking(root = globalThis.document.getElementById("res
       })
     : null;
 
+  ui.form.addEventListener("change", () => {
+    if (daysBox) daysBox.hidden = kindValue() !== "torneio";
+    renderSummary();
+  });
   ui.form.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (submit?.disabled) return;
@@ -730,9 +742,11 @@ export async function initBooking(root = globalThis.document.getElementById("res
         end: sent.range.end,
         contact: values.contact.trim(),
         message: values.message.trim(),
+        kind: kindValue(),
+        days: kindValue() === "torneio" ? Number(daysInput?.value) : undefined,
       });
       setBusy(submit, false);
-      showSuccess(data?.booking, sent);
+      showSuccess(data?.booking, sent, data?.count);
     } catch (err) {
       setBusy(submit, false);
       if (!(err instanceof ApiError)) {

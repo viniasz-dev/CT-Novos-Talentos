@@ -64,6 +64,7 @@ class ApiBase(TestCase):
 
 class FieldsTests(ApiBase):
     def test_lists_only_active(self):
+        Field.objects.filter(name="Campo Society").delete()  # criado pela migration 0002
         Field.objects.create(name="Oculto", price_per_hour=Decimal("50"), active=False)
         r = self.client.get("/api/fields")
         self.assertEqual(r.status_code, 200)

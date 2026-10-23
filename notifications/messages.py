@@ -15,8 +15,10 @@ def render(kind: str, booking) -> tuple[str, str]:
     subject, intro = _KINDS[kind]
     start = timezone.localtime(booking.start)
     end = timezone.localtime(booking.end)
+    tipo = f"Tipo: {booking.get_kind_display()}\n" if booking.kind != "avulsa" else ""
     body = (
         f"{intro}\n\n"
+        f"{tipo}"
         f"Campo: {booking.field.name}\n"
         f"Data: {start:%d/%m/%Y}\n"
         f"Horário: {start:%H:%M} às {end:%H:%M}\n"

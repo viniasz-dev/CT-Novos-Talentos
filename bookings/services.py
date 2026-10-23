@@ -1,3 +1,4 @@
+import uuid
 from datetime import date, datetime, timedelta, timezone as dt_timezone
 
 from django.conf import settings
@@ -132,9 +133,11 @@ def _raise_on_conflicts(field, start, end, exclude_booking_id=None) -> None:
         raise Conflict("blocked", "Este horário está bloqueado.")
 
 
-def _emit(booking, kind, actor, audit_action) -> None:
+def _emit(booking, kind, actor, audit_action, notify=True) -> None:
     AuditEvent.log(actor, audit_action, booking, field=booking.field_id,
                    status=booking.status)
+    if not notify:
+        return
     booking_event.send(sender=BookingRequest, booking=booking, kind=kind, actor=actor)
 
 
@@ -144,8 +147,43 @@ def _emit(booking, kind, actor, audit_action) -> None:
 STAFF_CANNOT_BOOK = 'A equipe não faz reservas; use "Bloquear horário".'
 
 
+MONTHLY_WEEKS = 4
+TOURNAMENT_MAX_DAYS = 7
+
+
+def create_booking_series(user, field: Field, start: datetime, end: datetime, contact: str,
+                          message: str = "", kind: str = "avulsa", days: int = 1,
+                          now: datetime | None = None) -> list[BookingRequest]:
+    """avulsa: 1 pedido; mensal: mesmo horário por 4 semanas; torneio: mesmo horário em
+    `days` dias seguidos. Tudo ou nada; a equipe é avisada uma vez só (1º pedido)."""
+    if kind == "avulsa":
+        return [create_booking(user, field, start, end, contact, message, now=now)]
+    if kind == "mensal":
+        step, count = timedelta(weeks=1), MONTHLY_WEEKS
+    elif kind == "torneio":
+        step, count = timedelta(days=1), days
+        if not isinstance(count, int) or not 2 <= count <= TOURNAMENT_MAX_DAYS:
+            raise ValidationFailed(
+                "bad_days", f"Torneio: informe de 2 a {TOURNAMENT_MAX_DAYS} dias seguidos.")
+    else:
+        raise ValidationFailed("invalid_kind", "Tipo de reserva inválido.")
+    series, out = str(uuid.uuid4()), []
+    with transaction.atomic():
+        for i in range(count):
+            s, e = start + step * i, end + step * i
+            try:
+                out.append(create_booking(user, field, s, e, contact, message, now=now,
+                                          kind=kind, series=series, notify=i == 0))
+            except BookingError as exc:
+                # ponytail: dia em horário local de SP; refaz a mensagem dizendo qual data falhou
+                raise type(exc)(exc.code, f"Dia {_local(s):%d/%m}: {exc.message}",
+                                exc.fields) from None
+    return out
+
+
 def create_booking(user, field: Field, start: datetime, end: datetime, contact: str,
-                   message: str = "", now: datetime | None = None) -> BookingRequest:
+                   message: str = "", now: datetime | None = None,
+                   kind: str = "avulsa", series: str = "", notify: bool = True) -> BookingRequest:
     # A equipe tira horários com bloqueios (create_block), nunca com pedidos.
     if _is_staff(user):
         raise Forbidden("staff_cannot_book", STAFF_CANNOT_BOOK)
@@ -163,11 +201,12 @@ def create_booking(user, field: Field, start: datetime, end: datetime, contact: 
             raise Conflict("duplicate",
                            "Você já tem um pedido neste horário para este campo.")
         booking = BookingRequest(user=user, field=locked, start=start, end=end,
-                                 status=BookingRequest.Status.PENDING)
+                                 status=BookingRequest.Status.PENDING,
+                                 kind=kind, series=series)
         booking.set_contact(contact)
         booking.set_message(message)
         booking.save()
-        _emit(booking, "created", user, "booking.created")
+        _emit(booking, "created", user, "booking.created", notify)
     return booking
 
 

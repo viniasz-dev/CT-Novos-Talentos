@@ -331,6 +331,7 @@ test("successful submit posts the range and shows the pending confirmation", asy
   await flush();
   assert.deepEqual(posted, {
     field: 2,
+    kind: "avulsa",
     start: "2026-10-20T18:00:00-03:00",
     end: "2026-10-20T20:00:00-03:00",
     contact: "(19) 90000-0000",

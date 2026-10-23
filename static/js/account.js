@@ -40,18 +40,48 @@ export function countByStatus(list) {
   return counts;
 }
 
-/** Contato e mensagem como ficam guardados (tokens Fernet) + link "Como funciona". */
+/** Contato e mensagem como ficam guardados (tokens Fernet) + "Descriptografar" (rota auditada, some em 30 s). */
 export function protectedBox(booking) {
-  return el(
-    "div",
-    { class: "booking-card__crypto", "data-protected": "" },
-    ...bookingTokens(booking),
-    el(
-      "p",
-      { class: "booking-card__crypto-note muted" },
-      `Guardado com ${booking?.protected?.algorithm || "Fernet"}. Só a equipe consegue decifrar, e cada acesso fica registrado.`,
-    ),
-  );
+  const box = el("div", { class: "booking-card__crypto", "data-protected": "" });
+  function showMasked() {
+    const reveal = el("button", { type: "button", class: "btn btn--sm btn--ghost", "data-action": "decrypt" }, "Descriptografar");
+    reveal.addEventListener("click", () => revealContact(reveal));
+    box.replaceChildren(
+      ...bookingTokens(booking),
+      reveal,
+      el(
+        "p",
+        { class: "booking-card__crypto-note muted" },
+        `Guardado com ${booking?.protected?.algorithm || "Fernet"}. Só você e a equipe conseguem decifrar, e cada acesso fica registrado.`,
+      ),
+    );
+  }
+  async function revealContact(reveal) {
+    setBusy(reveal, true);
+    let data;
+    try {
+      data = await api.get(`/api/bookings/${encodeURIComponent(booking.id)}/contact`);
+    } catch (err) {
+      setBusy(reveal, false);
+      toast(err instanceof ApiError ? err.message : "Não foi possível descriptografar. Tente de novo.", "error");
+      return;
+    }
+    const hideButton = el("button", { type: "button", class: "link-button", "data-action": "hide-contact" }, "Ocultar");
+    const timer = setTimeout(showMasked, 30000);
+    hideButton.addEventListener("click", () => {
+      clearTimeout(timer);
+      showMasked();
+    });
+    box.replaceChildren(
+      el("p", { class: "ctoken__label", text: "🔓 Contato (decifrado)" }),
+      el("p", { text: data?.contact || "Não informado." }),
+      el("p", { class: "ctoken__label", text: "🔓 Mensagem (decifrada)" }),
+      el("p", { text: data?.message || "Sem mensagem." }),
+      hideButton,
+    );
+  }
+  showMasked();
+  return box;
 }
 
 export function canCancelNow(booking, now = new Date()) {
@@ -103,6 +133,7 @@ export async function initAccount(root = globalThis.document.getElementById("min
         { class: "booking-card__head" },
         el("h3", { id: titleId, class: "booking-card__field", tabindex: "-1", text: booking.field?.name || "Campo" }),
         statusBadge(booking.status, booking.status_label),
+        booking.kind && booking.kind !== "avulsa" ? el("span", { class: "badge", text: booking.kind_label }) : null,
       ),
       el(
         "p",

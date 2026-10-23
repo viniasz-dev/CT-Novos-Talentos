@@ -6,7 +6,7 @@ from common.http import (
     ApiError, api, int_from_json, int_from_text, parse_aware_datetime, parse_date, read_json,
 )
 
-from . import services
+from . import privacy, services
 from .models import BookingRequest, Field
 from .serializers import booking_to_dict, field_to_dict
 
@@ -105,8 +105,12 @@ def bookings_view(request):
     field = Field.objects.filter(pk=field_id).first()
     if field is None:
         raise _not_found()
-    booking = services.create_booking(request.user, field, start, end, contact, message)
-    return JsonResponse({"booking": booking_to_dict(booking)}, status=201)
+    kind = data.get("kind") or "avulsa"
+    days = int_from_json(data.get("days")) or 1
+    created = services.create_booking_series(
+        request.user, field, start, end, contact, message, kind, days)
+    return JsonResponse({"booking": booking_to_dict(created[0]),
+                         "count": len(created)}, status=201)
 
 
 @api(["POST"])
@@ -120,9 +124,19 @@ def cancel_view(request, pk):
     return JsonResponse({"booking": booking_to_dict(booking)})
 
 
+@api(["GET"])
+@login_required_json
+def contact_view(request, pk):
+    booking = BookingRequest.objects.filter(pk=pk, user=request.user).first()
+    if booking is None:
+        raise _not_found()
+    return JsonResponse(privacy.reveal_contact(booking, request.user))
+
+
 urlpatterns = [
     path("fields", fields_view),
     path("availability", availability_view),
     path("bookings", bookings_view),
     path("bookings/<int:pk>/cancel", cancel_view),
+    path("bookings/<int:pk>/contact", contact_view),
 ]

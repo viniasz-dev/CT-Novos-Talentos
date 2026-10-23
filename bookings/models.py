@@ -30,6 +30,11 @@ class BookingRequest(models.Model):
         REJECTED = "recusado", "Recusado"
         CANCELLED = "cancelado", "Cancelado"
 
+    class Kind(models.TextChoices):
+        SINGLE = "avulsa", "Avulsa"
+        MONTHLY = "mensal", "Mensal"
+        TOURNAMENT = "torneio", "Torneio"
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                              related_name="bookings")
     field = models.ForeignKey(Field, on_delete=models.PROTECT, related_name="bookings")
@@ -37,6 +42,8 @@ class BookingRequest(models.Model):
     end = models.DateTimeField()
     status = models.CharField(max_length=10, choices=Status.choices,
                               default=Status.PENDING)
+    kind = models.CharField(max_length=10, choices=Kind.choices, default=Kind.SINGLE)
+    series = models.CharField(max_length=36, blank=True, default="")
     contact_enc = models.TextField(blank=True, default="")
     message_enc = models.TextField(blank=True, default="")
     created_at = models.DateTimeField(auto_now_add=True)

@@ -5,8 +5,8 @@ from .models import AuditEvent, BookingRequest
 
 
 def reveal_contact(booking: BookingRequest, actor) -> dict:
-    """Decifra contato e mensagem para staff e audita (sem o conteudo no meta)."""
-    if not getattr(actor, "is_staff", False):
+    """Decifra contato e mensagem para staff ou para o dono do pedido e audita (sem o conteudo no meta)."""
+    if not (getattr(actor, "is_staff", False) or booking.user_id == getattr(actor, "pk", None)):
         raise ApiError("forbidden", "Acesso negado.", 403)
     try:
         data = {"contact": booking.get_contact(), "message": booking.get_message()}

@@ -136,6 +136,7 @@ export function createKanban(deps) {
         { class: "order__head" },
         el("h4", { class: "kcard__title" }, el("span", { class: "order__id", text: `#${id}` }), " ", booking.field?.name || "Campo"),
         statusBadge(booking.status, booking.status_label),
+        booking.kind && booking.kind !== "avulsa" ? el("span", { class: "badge", text: booking.kind_label }) : null,
       ),
       el(
         "p",

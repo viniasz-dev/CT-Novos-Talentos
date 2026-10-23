@@ -18,6 +18,7 @@ def at(day, hour):
 
 class StatsMathTests(TestCase):
     def setUp(self):
+        Field.objects.all().delete()  # campo padrão da migration 0002
         self.user = User.objects.create_user("a@x.test", PW, name="A")
         self.f1 = Field.objects.create(name="Campo 1", price_per_hour="150.00")
         self.f2 = Field.objects.create(name="Campo 2", price_per_hour="100.00", active=False)

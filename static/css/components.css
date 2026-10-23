@@ -788,6 +788,22 @@
   font-size: var(--fs-xs);
 }
 
+.site-footer__secure {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin-top: var(--s-3);
+  color: var(--text-muted);
+  font-size: var(--fs-xs);
+}
+
+.site-footer__secure .icon {
+  width: 1.1rem;
+  height: 1.1rem;
+  flex: none;
+  color: var(--accent);
+}
+
 /* ---------- Componentes da área logada (Task 7b) ---------- */
 
 /* Botão de ação destrutiva (só dentro de confirmação) */
