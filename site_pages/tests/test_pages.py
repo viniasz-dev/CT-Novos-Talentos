@@ -314,14 +314,15 @@ class StaffPagesTests(TestCase):
 
 
 class CryptoPageTests(TestCase):
-    def test_crypto_tool_page_exists_but_is_not_linked_in_the_menu(self):
+    def test_crypto_tool_page_is_linked_only_in_the_footer(self):
         r = self.client.get("/criptografia/")
         self.assertContains(r, "js/cipher-tool.js")
         for method in ("caesar", "substitution", "transposition", "vigenere"):
             self.assertContains(r, f'value="{method}"')
         self.assertIsNotNone(finders.find("js/cipher-tool.js"))
         home = self.client.get("/").content.decode()
-        self.assertNotIn('href="/criptografia/"', home)
+        self.assertIn('href="/criptografia/"', home)  # só no rodapé, fora do menu principal
+        self.assertNotIn('class="nav__link" href="/criptografia/"', home)
 
     def test_painel_has_kpis_and_no_crypto_tab(self):
         r = self.client.get("/painel/")
