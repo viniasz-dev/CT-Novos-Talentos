@@ -707,7 +707,6 @@ export async function initBooking(root = globalThis.document.getElementById("res
         ? el(
             "div",
             { class: "success__crypto", "data-protected": "" },
-            el("p", { class: "muted", text: "Seu contato e sua mensagem já foram guardados criptografados. É assim que eles ficam no banco:" }),
             ...bookingTokens(booking),
           )
         : null,

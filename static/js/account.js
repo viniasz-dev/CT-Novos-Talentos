@@ -49,11 +49,6 @@ export function protectedBox(booking) {
     box.replaceChildren(
       ...bookingTokens(booking),
       reveal,
-      el(
-        "p",
-        { class: "booking-card__crypto-note muted" },
-        `Guardado com ${booking?.protected?.algorithm || "Fernet"}. Só você e a equipe conseguem decifrar, e cada acesso fica registrado.`,
-      ),
     );
   }
   async function revealContact(reveal) {
