@@ -23,6 +23,8 @@ from .serializers import ALGORITHM
 ACTIONS = {
     "caesar": {"encrypt", "decrypt", "bruteforce"},
     "vigenere": {"encrypt", "decrypt"},
+    "substitution": {"encrypt", "decrypt"},
+    "transposition": {"encrypt", "decrypt"},
     "fernet": {"encrypt", "decrypt", "tamper"},
 }
 WINDOW = 60
@@ -93,6 +95,26 @@ def _vigenere(action: str, data: dict) -> dict:
     return {"result": result, "steps": steps}
 
 
+def _substitution(action: str, data: dict) -> dict:
+    text = _text(data, crypto_demo.MAX_TEXT, "invalid_text", "um texto")
+    key = _key(data)
+    decrypt = action == "decrypt"
+    result = cc.substitution_decrypt(text, key) if decrypt else cc.substitution_encrypt(text, key)
+    return {"result": result, "steps": cc.substitution_steps(text, key, decrypt=decrypt),
+            "alphabet": cc.substitution_alphabet(key)}
+
+
+def _transposition(action: str, data: dict) -> dict:
+    text = _text(data, crypto_demo.MAX_TEXT, "invalid_text", "um texto")
+    key = _key(data)
+    if len(key) < 2:
+        raise _bad("invalid_key", "A chave da transposição deve ter pelo menos 2 letras.", "key")
+    if action == "decrypt":
+        result = cc.transposition_decrypt(text, key)
+        return {"result": result, "grid": cc.transposition_grid(result, key)}
+    return {"result": cc.transposition_encrypt(text, key), "grid": cc.transposition_grid(text, key)}
+
+
 def _fernet(action: str, data: dict) -> dict:
     if action == "encrypt":
         text = _text(data, crypto_demo.MAX_TEXT, "invalid_text", "um texto")
@@ -120,7 +142,8 @@ def _fernet(action: str, data: dict) -> dict:
     return {"result": plain, "anatomy": anatomy}
 
 
-HANDLERS = {"caesar": _caesar, "vigenere": _vigenere, "fernet": _fernet}
+HANDLERS = {"caesar": _caesar, "vigenere": _vigenere, "substitution": _substitution,
+            "transposition": _transposition, "fernet": _fernet}
 
 
 @api(["POST"])
@@ -134,7 +157,7 @@ def demo(request):
     data = read_json(request)
     cipher = data.get("cipher")
     if not isinstance(cipher, str) or cipher not in ACTIONS:
-        raise _bad("invalid_cipher", "Escolha a cifra: caesar, vigenere ou fernet.", "cipher")
+        raise _bad("invalid_cipher", "Escolha a cifra: caesar, vigenere, substitution, transposition ou fernet.", "cipher")
     action = data.get("action")
     if not isinstance(action, str) or action not in ACTIONS[cipher]:
         allowed = ", ".join(sorted(ACTIONS[cipher]))

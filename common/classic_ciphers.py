@@ -1,4 +1,4 @@
-"""Cifras clássicas (César e Vigenère) para a página didática /criptografia/.
+"""Cifras clássicas (César, Vigenère, Substituição e Transposição) para a página didática /criptografia/.
 
 ATENÇÃO: estas cifras são INSEGURAS. César tem só 25 chaves (quebra por força
 bruta em milissegundos) e Vigenère cai com análise de frequência (Kasiski).
@@ -149,3 +149,98 @@ def vigenere_encrypt(text, key) -> str:
 
 def vigenere_decrypt(text, key) -> str:
     return _join(vigenere_steps(text, key, decrypt=True))
+
+
+# ---------- Substituição monoalfabética (alfabeto por palavra-chave) ----------
+
+
+def _keyword_alphabet(key: str) -> list[str]:
+    """Letras da palavra-chave (sem repetir) seguidas das letras que sobraram."""
+    seen = []
+    for char in key.lower():
+        if char not in seen:
+            seen.append(char)
+    return seen + [c for c in "abcdefghijklmnopqrstuvwxyz" if c not in seen]
+
+
+def substitution_alphabet(key) -> str:
+    """Alfabeto cifrado (A-Z) que a chave produz: usado para mostrar a tabela."""
+    return "".join(_keyword_alphabet(_validate_key(key))).upper()
+
+
+def substitution_steps(text, key, decrypt: bool = False) -> list[dict]:
+    text, alphabet = _validate_text(text), _keyword_alphabet(_validate_key(key))
+    steps = []
+    for char in text:
+        parts = _split_letter(char)
+        if parts is None:
+            steps.append({"char": char, "index": None, "shifted_index": None,
+                          "out": char, "is_letter": False})
+            continue
+        base, marks, upper = parts
+        index = ord(base.lower()) - ord("a")
+        if decrypt:
+            mapped = alphabet.index(base.lower())
+        else:
+            mapped = ord(alphabet[index]) - ord("a")
+        letter = chr(ord("A" if upper else "a") + mapped)
+        steps.append({"char": char, "index": index, "shifted_index": mapped,
+                      "out": unicodedata.normalize("NFC", letter + marks), "is_letter": True})
+    return steps
+
+
+def substitution_encrypt(text, key) -> str:
+    return _join(substitution_steps(text, key))
+
+
+def substitution_decrypt(text, key) -> str:
+    return _join(substitution_steps(text, key, decrypt=True))
+
+
+# ---------- Transposição colunar (sem preenchimento) ----------
+
+
+def _validate_transposition_key(key) -> str:
+    key = _validate_key(key)
+    if len(key) < 2:
+        raise ValueError("A chave da transposição deve ter pelo menos 2 letras.")
+    return key
+
+
+def _column_order(key: str) -> list[int]:
+    """Ordem de leitura das colunas: pela ordem alfabética das letras da chave."""
+    return sorted(range(len(key)), key=lambda i: (key[i].lower(), i))
+
+
+def transposition_grid(text, key) -> dict:
+    """Tabela onde o texto é escrito em linhas e a ordem de leitura das colunas."""
+    text, key = _validate_text(text), _validate_transposition_key(key)
+    n = len(key)
+    order = _column_order(key)
+    rank = {col: pos + 1 for pos, col in enumerate(order)}
+    rows = [list(text[i:i + n]) for i in range(0, len(text), n)]
+    return {"key": key.upper(), "order": [rank[i] for i in range(n)], "rows": rows}
+
+
+def transposition_encrypt(text, key) -> str:
+    text, key = _validate_text(text), _validate_transposition_key(key)
+    n = len(key)
+    columns = [text[i::n] for i in range(n)]
+    return "".join(columns[i] for i in _column_order(key))
+
+
+def transposition_decrypt(text, key) -> str:
+    text, key = _validate_text(text), _validate_transposition_key(key)
+    n = len(key)
+    base, extra = divmod(len(text), n)
+    columns, pos = {}, 0
+    for col in _column_order(key):
+        size = base + 1 if col < extra else base
+        columns[col] = text[pos:pos + size]
+        pos += size
+    out = []
+    for row in range(base + 1):
+        for col in range(n):
+            if row < len(columns[col]):
+                out.append(columns[col][row])
+    return "".join(out)

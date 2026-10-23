@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Ferramenta de criptografia | CT Novos Talentos{% endblock %}
+{% block description %}Ferramenta didática para criptografar e descriptografar mensagens com a Cifra de César, Vigenère, Substituição e Transposição, com material explicativo e exemplos.{% endblock %}
+{% block body_class %}page-criptografia{% endblock %}
+{% block content %}
+<section class="page-hero">
+  <div class="container">
+    <h1>Ferramenta de criptografia</h1>
+    <p>Digite uma mensagem, escolha um método clássico e veja, passo a passo, como ela é codificada e recuperada.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="como-usar">
+  <div class="container prose">
+    <h2 id="como-usar">Como usar</h2>
+    <ol>
+      <li>Escreva ou cole a mensagem no campo de texto.</li>
+      <li>Escolha o método e informe a chave pedida (um número ou uma palavra).</li>
+      <li>Clique em <strong>Criptografar</strong> para codificar ou em <strong>Descriptografar</strong> para recuperar o texto original com a mesma chave.</li>
+      <li>Veja o resultado e o passo a passo logo abaixo. Se quiser, use um dos exemplos prontos.</li>
+    </ol>
+    <p>Atenção: estes métodos são <strong>didáticos</strong> e podem ser quebrados com facilidade. Eles não protegem dados reais.</p>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="ferramenta-titulo">
+  <div class="container crypto-tool">
+    <h2 id="ferramenta-titulo">Ferramenta</h2>
+
+    <form class="form crypto-tool__form" data-cipher-form novalidate>
+      <div class="form-alert" data-cipher-error role="alert" tabindex="-1" hidden></div>
+
+      <div class="field">
+        <label class="field__label" for="cifra-metodo">Método</label>
+        <select id="cifra-metodo" name="cipher" data-cipher-method>
+          <option value="caesar">Cifra de César</option>
+          <option value="substitution">Substituição (por palavra-chave)</option>
+          <option value="transposition">Transposição colunar</option>
+          <option value="vigenere">Cifra de Vigenère</option>
+        </select>
+      </div>
+
+      <div class="field" data-field-shift>
+        <label class="field__label" for="cifra-deslocamento">Deslocamento (1 a 25)</label>
+        <input id="cifra-deslocamento" name="shift" type="number" min="1" max="25" value="3" inputmode="numeric" />
+        <p class="field__error" data-error-for="shift" hidden></p>
+      </div>
+
+      <div class="field" data-field-key hidden>
+        <label class="field__label" for="cifra-chave">Palavra-chave (só letras, sem acento)</label>
+        <input id="cifra-chave" name="key" type="text" maxlength="32" autocomplete="off" spellcheck="false" />
+        <p class="field__error" data-error-for="key" hidden></p>
+      </div>
+
+      <div class="field">
+        <div class="field__row">
+          <label class="field__label" for="cifra-texto">Mensagem</label>
+          <span class="field__counter" data-cipher-counter aria-live="polite">0/500</span>
+        </div>
+        <textarea id="cifra-texto" name="text" rows="4" maxlength="500"></textarea>
+        <p class="field__error" data-error-for="text" hidden></p>
+      </div>
+
+      <div class="crypto-tool__actions">
+        <button class="btn" type="submit" data-action="encrypt">Criptografar</button>
+        <button class="btn btn--ghost" type="submit" data-action="decrypt">Descriptografar</button>
+        <button class="btn btn--ghost" type="button" data-cipher-clear>Limpar</button>
+      </div>
+    </form>
+
+    <div class="crypto-tool__out" data-cipher-out aria-live="polite" hidden>
+      <h3>Resultado</h3>
+      <p class="crypto-tool__result" data-cipher-result></p>
+      <button class="btn btn--sm btn--ghost" type="button" data-cipher-copy>Copiar resultado</button>
+      <div data-cipher-detail></div>
+    </div>
+    <noscript><p class="state">Ative o JavaScript para usar a ferramenta.</p></noscript>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="exemplos-titulo">
+  <div class="container prose">
+    <h2 id="exemplos-titulo">Exemplos práticos</h2>
+    <p>Toque em um exemplo para preencher a ferramenta. Depois é só clicar em Criptografar.</p>
+    <ul class="crypto-examples">
+      <li><button class="btn btn--sm btn--ghost" type="button" data-example data-cipher="caesar" data-shift="3" data-text="Ataque ao amanhecer">César, deslocamento 3: "Ataque ao amanhecer"</button></li>
+      <li><button class="btn btn--sm btn--ghost" type="button" data-example data-cipher="substitution" data-key="futebol" data-text="Reserva do campo society">Substituição, chave FUTEBOL: "Reserva do campo society"</button></li>
+      <li><button class="btn btn--sm btn--ghost" type="button" data-example data-cipher="transposition" data-key="campo" data-text="Reserve o horario das vinte horas">Transposição, chave CAMPO: "Reserve o horario das vinte horas"</button></li>
+      <li><button class="btn btn--sm btn--ghost" type="button" data-example data-cipher="vigenere" data-key="gol" data-text="Jogo marcado para sexta">Vigenère, chave GOL: "Jogo marcado para sexta"</button></li>
+    </ul>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="material-titulo">
+  <div class="container prose">
+    <h2 id="material-titulo">Material explicativo</h2>
+
+    <h3>Segurança digital e criptografia</h3>
+    <p>Segurança digital é o conjunto de cuidados que protegem informações e sistemas contra acessos indevidos, alterações e perdas. A criptografia é uma das principais ferramentas desse conjunto: ela transforma uma mensagem legível (texto claro) em outra, ilegível (texto cifrado), usando um método (a cifra) e uma chave. Quem não tem a chave não consegue recuperar a mensagem original. O processo inverso se chama descriptografia.</p>
+    <p>Proteger dados e a privacidade importa porque nomes, telefones, mensagens e senhas circulam o tempo todo na internet. A Lei Geral de Proteção de Dados (LGPD) exige que quem guarda esses dados os trate com responsabilidade, e a criptografia reduz o estrago caso alguém consiga acessar um arquivo ou um banco de dados.</p>
+
+    <h3>Cifra de César</h3>
+    <p>Atribuída a Júlio César, é uma cifra de <strong>deslocamento</strong>: cada letra é trocada pela que está algumas posições à frente no alfabeto. Com deslocamento 3, A vira D, B vira E e assim por diante; depois do Z, volta ao A. A chave é só o número do deslocamento.</p>
+    <p><strong>Ponto fraco:</strong> só existem 25 deslocamentos possíveis, então basta testá-los todos (ataque de força bruta) para quebrar a mensagem em segundos.</p>
+
+    <h3>Substituição por palavra-chave</h3>
+    <p>Na cifra de <strong>substituição monoalfabética</strong>, cada letra do alfabeto é trocada sempre por uma outra letra fixa. Aqui, o alfabeto cifrado é montado a partir de uma palavra-chave: primeiro vêm as letras da palavra, sem repetir, e depois as letras que sobraram. Com a chave FUTEBOL, o alfabeto cifrado começa com F, U, T, E, B, O, L, A, C, D... e A vira F, B vira U, C vira T.</p>
+    <p><strong>Ponto fraco:</strong> há um número enorme de alfabetos possíveis, então a força bruta não funciona, mas a <strong>análise de frequência</strong> sim: em português, a letra A é muito comum, e o mesmo acontece no texto cifrado com a letra que a substituiu.</p>
+
+    <h3>Transposição colunar</h3>
+    <p>Na <strong>transposição</strong>, as letras não são trocadas: elas só mudam de lugar. O texto é escrito em linhas, numa tabela com uma coluna para cada letra da palavra-chave. Depois, as colunas são lidas na ordem alfabética das letras da chave. Com a chave ZEBRA, a coluna da letra A é lida primeiro, depois a B, a E, a R e por fim a Z.</p>
+    <p><strong>Ponto fraco:</strong> como as letras do texto original continuam todas ali, a contagem de letras do texto cifrado é igual à do original, o que ajuda a quebrar a cifra, principalmente se for aplicada junto com tentativas de chaves prováveis.</p>
+
+    <h3>Cifra de Vigenère</h3>
+    <p>É uma evolução da César: em vez de um único deslocamento, usa uma palavra-chave. Cada letra da chave define um deslocamento diferente, e a chave se repete ao longo do texto. Assim, a mesma letra pode ser cifrada de formas diferentes.</p>
+    <p><strong>Ponto fraco:</strong> a repetição da chave deixa padrões que podem ser descobertos (método de Kasiski), então também não é segura hoje.</p>
+
+    <h3>E a criptografia usada de verdade?</h3>
+    <p>Sistemas atuais usam algoritmos modernos, como o AES, com chaves longas e aleatórias, e garantem também que a mensagem não foi alterada. O sistema de reservas do CT Novos Talentos usa o método <strong>Fernet</strong> (AES com autenticação) para proteger contato e mensagem dos pedidos, e o <strong>HTTPS</strong> para proteger os dados enquanto viajam entre o navegador e o servidor. As senhas, por sua vez, não são criptografadas: elas passam por um <strong>hash</strong>, uma transformação sem volta, para nunca ficarem guardadas em texto legível.</p>
+
+    <h3>Boas práticas</h3>
+    <ul>
+      <li>Use senhas longas e diferentes em cada serviço, de preferência com um gerenciador de senhas.</li>
+      <li>Ative a verificação em duas etapas sempre que possível.</li>
+      <li>Confira se o site usa HTTPS (cadeado no navegador) antes de informar dados pessoais.</li>
+      <li>Desconfie de mensagens que pedem senha, código ou dados bancários.</li>
+      <li>Mantenha o sistema e os aplicativos atualizados.</li>
+    </ul>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script type="module">
+  import { initCipherTool } from "{% static 'js/cipher-tool.js' %}";
+  initCipherTool();
+</script>
+{% endblock %}

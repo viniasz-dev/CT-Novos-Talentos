@@ -1,5 +1,7 @@
 from django.test import SimpleTestCase
 
+from common import classic_ciphers as cc
+
 from common.classic_ciphers import (
     caesar_bruteforce,
     caesar_decrypt,
@@ -89,3 +91,29 @@ class VigenereTests(SimpleTestCase):
         for bad in ("", "a1", "chave secreta", "ção", "x" * 33, None, 5):
             with self.subTest(bad=bad), self.assertRaises(ValueError):
                 vigenere_encrypt("abc", bad)
+
+
+class SubstitutionTranspositionTests(SimpleTestCase):
+    def test_substitution_roundtrip_keeps_case_accents_and_symbols(self):
+        text = "Olá, Mundo! São 3 bolas."
+        enc = cc.substitution_encrypt(text, "futebol")
+        self.assertNotEqual(enc, text)
+        self.assertEqual(cc.substitution_decrypt(enc, "futebol"), text)
+
+    def test_substitution_alphabet_from_keyword(self):
+        self.assertEqual(cc.substitution_alphabet("zebra"), "ZEBRACDFGHIJKLMNOPQSTUVWXY")
+        self.assertEqual(cc.substitution_encrypt("abc", "zebra"), "zeb")
+
+    def test_transposition_known_value_and_roundtrip(self):
+        # chave ZEBRA (5 colunas): lidas na ordem A(4), B(2), E(1), R(3), Z(0)
+        self.assertEqual(cc.transposition_encrypt("ATAQUEAMANHA", "ZEBRA"), "UNAMTAAQAAEH")
+        for text in ("ATAQUEAMANHA", "Olá, tudo bem?", "x" * 7, "ab"):
+            enc = cc.transposition_encrypt(text, "ZEBRA")
+            self.assertEqual(sorted(enc), sorted(text))
+            self.assertEqual(cc.transposition_decrypt(enc, "ZEBRA"), text)
+
+    def test_invalid_keys_rejected(self):
+        with self.assertRaises(ValueError):
+            cc.transposition_encrypt("texto", "a")
+        with self.assertRaises(ValueError):
+            cc.substitution_encrypt("texto", "123")

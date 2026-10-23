@@ -44,6 +44,15 @@ class CryptoDemoApiTests(TestCase):
         r = demo(self.c, cipher="vigenere", action="decrypt", text="LXFOPVEFRNHR", key="LEMON")
         self.assertEqual(r.json()["result"], "ATTACKATDAWN")
 
+    def test_substitution_and_transposition_round_trip(self):
+        for cipher, key in (("substitution", "futebol"), ("transposition", "campo")):
+            enc = demo(self.c, cipher=cipher, action="encrypt", text="Reserva do campo 7", key=key).json()
+            self.assertNotEqual(enc["result"], "Reserva do campo 7")
+            dec = demo(self.c, cipher=cipher, action="decrypt", text=enc["result"], key=key).json()
+            self.assertEqual(dec["result"], "Reserva do campo 7")
+        r = demo(self.c, cipher="transposition", action="encrypt", text="abc", key="a")
+        self.assertEqual(r.status_code, 400)
+
     def test_fernet_round_trip_and_tamper(self):
         r = demo(self.c, cipher="fernet", action="encrypt", text="Olá, CT!")
         token = r.json()["result"]
