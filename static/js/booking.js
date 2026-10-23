@@ -137,15 +137,26 @@ export async function initBooking(root = globalThis.document.getElementById("res
   const contact = ui.form.querySelector('[name="contact"]');
   const message = ui.form.querySelector('[name="message"]');
   const submit = ui.form.querySelector('button[type="submit"]');
-  const daysBox = ui.form.querySelector("[data-torneio-days]");
-  const daysInput = ui.form.querySelector('[name="days"]');
+  const toolsBox = root.querySelector("[data-torneio-tools]");
+  const allDayBtn = root.querySelector("[data-all-day]");
+  const addBtn = root.querySelector("[data-add-range]");
+  const cartList = root.querySelector("[data-cart]");
+  let cart = []; // torneio: períodos já escolhidos {date, start, end, hours}
   const kindButtons = [...root.querySelectorAll("[data-kind]")];
   let kind = "avulsa";
   const kindValue = () => kind;
-  const repeats = () => {
-    const kind = kindValue();
-    return kind === "mensal" ? 4 : kind === "torneio" ? Number(daysInput?.value) || 2 : 1;
-  };
+  const maxSel = () => (kind === "torneio" ? 24 : MAX_HOURS);
+  const overlaps = (a, b) => a.start < b.end && a.end > b.start;
+  // Torneio envia o carrinho mais a seleção ainda não adicionada.
+  function torneioItems() {
+    const range = selectionToRange(s.selected, s.slots);
+    const items = [...cart];
+    if (range && s.date) {
+      const pending = { date: s.date, start: range.start, end: range.end, hours: s.selected.length };
+      if (!items.some((i) => overlaps(i, pending))) items.push(pending);
+    }
+    return items.sort((a, b) => (a.start < b.start ? -1 : 1));
+  }
   const staticBase = root.dataset.staticBase || "/static/";
   const fallbackPhoto = root.dataset.fallbackPhoto || "";
   const blockMode = root.dataset.mode === "block";
@@ -293,6 +304,7 @@ export async function initBooking(root = globalThis.document.getElementById("res
     s.field = field;
     s.selected = [];
     s.slots = [];
+    cart = [];
     clearFieldErrors(ui.form);
     renderFieldChecks();
     syncUrl();
@@ -565,6 +577,7 @@ export async function initBooking(root = globalThis.document.getElementById("res
       if (anyFree) return `Toque em até ${MAX_HOURS} horários livres seguidos para bloquear${anyBlocked ? ", ou num bloqueado para ver e liberar" : ""}.`;
       return anyBlocked ? "Toque num horário bloqueado para ver o motivo ou liberar." : "Não há horários livres neste dia. Escolha outro dia.";
     }
+    if (kind === "torneio") return anyFree ? 'Toque nos horários seguidos que quiser ou em "Dia todo".' : "Não há horários livres neste dia. Escolha outro dia.";
     return anyFree ? `Toque em até ${MAX_HOURS} horários seguidos.` : "Não há horários livres neste dia. Escolha outro dia.";
   }
 
@@ -588,7 +601,7 @@ export async function initBooking(root = globalThis.document.getElementById("res
   function pickSlot(i) {
     blocks?.close();
     const before = s.selected;
-    const next = toggleSlot(before, i, s.slots, MAX_HOURS);
+    const next = toggleSlot(before, i, s.slots, blockMode ? MAX_HOURS : maxSel());
     const blockedAtMax = next.length === before.length && before.length >= MAX_HOURS && !before.includes(i);
     const adjacent = before.length && (i === Math.min(...before) - 1 || i === Math.max(...before) + 1);
     s.selected = next;
@@ -602,18 +615,48 @@ export async function initBooking(root = globalThis.document.getElementById("res
   // ---------- resumo ----------
   function renderSummary() {
     const range = selectionToRange(s.selected, s.slots);
-    const total = totalPrice(s.field?.price_per_hour, s.selected.length * (blockMode ? 1 : repeats()));
+    const tourney = !blockMode && kind === "torneio";
+    const monthly = !blockMode && kind === "mensal";
+    const items = tourney ? torneioItems() : [];
+    const hours = tourney ? items.reduce((n, i) => n + i.hours, 0) : s.selected.length * (monthly ? 4 : 1);
+    const total = totalPrice(s.field?.price_per_hour, hours);
+    const weekday = s.date ? formatDayLong(s.date).split(",")[0] : "";
     ui.sumField.textContent = s.field?.name || "—";
-    ui.sumDate.textContent = s.date ? formatDayLong(s.date) : "—";
-    ui.sumTime.textContent = range ? formatTimeRange(range.start, range.end) : "—";
-    ui.sumHours.textContent = range ? hoursLabel(s.selected.length) : "—";
-    const totalText = range && total !== null ? formatPrice(total) : "—";
+    if (tourney) {
+      ui.sumDate.textContent = items.length ? `${items.length} período${items.length > 1 ? "s" : ""}` : "—";
+      ui.sumTime.textContent = "—";
+      ui.sumHours.textContent = items.length ? hoursLabel(hours) : "—";
+    } else {
+      ui.sumDate.textContent = !s.date ? "—" : monthly ? `Toda ${weekday}, 4 semanas` : formatDayLong(s.date);
+      ui.sumTime.textContent = range ? formatTimeRange(range.start, range.end) : "—";
+      ui.sumHours.textContent = range ? (monthly ? `${hoursLabel(s.selected.length)} por semana` : hoursLabel(s.selected.length)) : "—";
+    }
+    if (cartList) {
+      cartList.hidden = !tourney || !items.length;
+      cartList.replaceChildren(...items.map((i) => {
+        const saved = cart.includes(i);
+        const row = el("li", {}, el("span", { text: `${formatDayLong(i.date)} · ${formatTimeRange(i.start, i.end)}${saved ? "" : " (a adicionar)"}` }));
+        if (saved) {
+          const remove = el("button", { type: "button", class: "link-button", "aria-label": `Remover ${formatDayLong(i.date)}` }, "Remover");
+          remove.addEventListener("click", () => {
+            cart = cart.filter((c) => c !== i);
+            renderSummary();
+          });
+          row.append(remove);
+        }
+        return row;
+      }));
+    }
+    if (toolsBox) toolsBox.hidden = !tourney;
+    if (addBtn) addBtn.disabled = !range;
+    const hasPick = tourney ? items.length > 0 : Boolean(range);
+    const totalText = hasPick && total !== null ? formatPrice(total) : "—";
     if (ui.sumTotal) ui.sumTotal.textContent = totalText;
     if (ui.bar) {
-      ui.bar.hidden = !range || s.sent;
+      ui.bar.hidden = !hasPick || s.sent;
       // Bloqueio não tem preço: a barra mostra a duração.
       if (ui.barTotal) ui.barTotal.textContent = blockMode ? (range ? hoursLabel(s.selected.length) : "") : totalText;
-      if (ui.barTime) ui.barTime.textContent = range ? `${formatTimeRange(range.start, range.end)}` : "";
+      if (ui.barTime) ui.barTime.textContent = tourney ? (items.length ? hoursLabel(hours) : "") : range ? `${formatTimeRange(range.start, range.end)}` : "";
     }
     renderSteps();
   }
@@ -658,7 +701,7 @@ export async function initBooking(root = globalThis.document.getElementById("res
         el("li", { text: booking?.field?.name || sent.field.name || "" }),
         el("li", { text: formatDayLong(booking?.start || sent.date) }),
         el("li", { text: booking?.start && booking?.end ? formatTimeRange(booking.start, booking.end) : formatTimeRange(range.start, range.end) }),
-        count > 1 ? el("li", { text: `${booking?.kind_label || "Série"}: ${count} pedidos criados (um por dia)` }) : null,
+        count > 1 ? el("li", { text: `${booking?.kind_label || "Série"}: ${count} pedidos criados (um por período)` }) : null,
       ),
       booking?.contact_token
         ? el(
@@ -706,18 +749,54 @@ export async function initBooking(root = globalThis.document.getElementById("res
     button.addEventListener("click", () => {
       kind = button.getAttribute("data-kind");
       for (const other of kindButtons) other.setAttribute("aria-checked", String(other === button));
-      if (daysBox) daysBox.hidden = kind !== "torneio";
+      if (kind !== "torneio") cart = [];
+      s.selected = [];
+      paintSelection();
       renderSummary();
+      setHint(idleHint());
     });
   }
   ui.form.addEventListener("change", renderSummary);
+  addBtn?.addEventListener("click", () => {
+    const range = selectionToRange(s.selected, s.slots);
+    if (!range || !s.date) return;
+    const item = { date: s.date, start: range.start, end: range.end, hours: s.selected.length };
+    if (cart.some((c) => overlaps(c, item))) {
+      toast("Esse período já está no torneio.", "error");
+      return;
+    }
+    cart.push(item);
+    s.selected = [];
+    paintSelection();
+    renderSummary();
+    setHint("Período adicionado. Escolha outro dia ou horário, ou envie o pedido.");
+  });
+  allDayBtn?.addEventListener("click", () => {
+    // Maior sequência de horários livres seguidos do dia.
+    let best = [];
+    let run = [];
+    s.slots.forEach((slot, i) => {
+      run = slot.state === "free" ? [...run, i] : [];
+      if (run.length > best.length) best = run;
+    });
+    if (!best.length) {
+      setHint("Não há horários livres neste dia.");
+      return;
+    }
+    s.selected = best;
+    paintSelection();
+    renderSummary();
+    setHint(`${hoursLabel(best.length)} selecionadas (dia todo). Toque em "Adicionar ao torneio".`);
+  });
   ui.form.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (submit?.disabled) return;
     if (blocks) return blocks.submit(submit);
     const values = { contact: contact?.value || "", message: message?.value || "" };
-    const range = selectionToRange(s.selected, s.slots);
-    if (!s.field || !s.date || !range) {
+    const tourney = kind === "torneio";
+    const items = tourney ? torneioItems() : [];
+    const range = tourney ? (items[0] ? { start: items[0].start, end: items[0].end } : null) : selectionToRange(s.selected, s.slots);
+    if (!s.field || (!tourney && !s.date) || !range) {
       showFieldErrors(ui.form, {}, "Escolha pelo menos um horário livre na grade antes de enviar.");
       return;
     }
@@ -727,7 +806,7 @@ export async function initBooking(root = globalThis.document.getElementById("res
       return;
     }
     // Foto do pedido no momento do envio: a pessoa pode trocar campo/dia enquanto espera.
-    const sent = { field: s.field, date: s.date, range };
+    const sent = { field: s.field, date: tourney ? items[0].date : s.date, range };
     clearFieldErrors(ui.form);
     setBusy(submit, true);
     let user;
@@ -745,13 +824,14 @@ export async function initBooking(root = globalThis.document.getElementById("res
     try {
       const data = await api.post("/api/bookings", {
         field: sent.field.id,
-        start: sent.range.start,
-        end: sent.range.end,
+        ...(tourney
+          ? { ranges: items.map((i) => ({ start: i.start, end: i.end })) }
+          : { start: sent.range.start, end: sent.range.end }),
         contact: values.contact.trim(),
         message: values.message.trim(),
         kind: kindValue(),
-        days: kindValue() === "torneio" ? Number(daysInput?.value) : undefined,
       });
+      cart = [];
       setBusy(submit, false);
       showSuccess(data?.booking, sent, data?.count);
     } catch (err) {

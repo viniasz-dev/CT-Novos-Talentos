@@ -98,17 +98,25 @@ def bookings_view(request):
 
     data = read_json(request)
     field_id = _field_id_from_body(data.get("field"))
-    start = _datetime_field(data, "start")
-    end = _datetime_field(data, "end")
+    kind = data.get("kind") or "avulsa"
+    if kind == "torneio":
+        raw = data.get("ranges")
+        if not isinstance(raw, list) or not all(isinstance(r, dict) for r in raw):
+            raise ApiError("bad_ranges", "Escolha pelo menos um período.", 400,
+                           {"ranges": "Escolha pelo menos um período."})
+        ranges = [(_datetime_field(r, "start"), _datetime_field(r, "end")) for r in raw]
+        start = end = None
+    else:
+        ranges = None
+        start = _datetime_field(data, "start")
+        end = _datetime_field(data, "end")
     contact = _text_field(data, "contact", "invalid_contact", "Contato", True)
     message = _text_field(data, "message", "invalid_message", "Mensagem", False)
     field = Field.objects.filter(pk=field_id).first()
     if field is None:
         raise _not_found()
-    kind = data.get("kind") or "avulsa"
-    days = int_from_json(data.get("days")) or 1
     created = services.create_booking_series(
-        request.user, field, start, end, contact, message, kind, days)
+        request.user, field, start, end, contact, message, kind, ranges)
     return JsonResponse({"booking": booking_to_dict(created[0]),
                          "count": len(created)}, status=201)
 

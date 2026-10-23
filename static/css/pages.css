@@ -842,6 +842,32 @@
   cursor: pointer;
 }
 
+.torneio-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  margin-top: var(--s-4);
+}
+
+.torneio-tools p {
+  flex-basis: 100%;
+}
+
+.cart {
+  list-style: none;
+  margin: 0 0 var(--s-3);
+  padding: 0;
+  display: grid;
+  gap: var(--s-2);
+}
+
+.cart li {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--s-2);
+  font-size: var(--fs-sm);
+}
+
 .pick-grid--kinds {
   margin-top: var(--s-3);
 }

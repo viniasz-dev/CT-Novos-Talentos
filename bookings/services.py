@@ -88,7 +88,7 @@ def _clean_text(value, max_len: int, code: str, label: str, required: bool) -> s
 
 
 def validate_window(field: Field, start: datetime, end: datetime,
-                    now: datetime | None = None) -> None:
+                    now: datetime | None = None, max_hours: int | None = None) -> None:
     if not field.active:
         raise ValidationFailed("field_inactive", "Este campo não está disponível.")
     _check_range(start, end)
@@ -98,10 +98,10 @@ def validate_window(field: Field, start: datetime, end: datetime,
             raise ValidationFailed(
                 "not_aligned", "Os horários devem ser em hora cheia.")
     hours = (end - start) / timedelta(hours=1)
-    if hours > settings.BOOKING_MAX_HOURS:
+    limit = max_hours or settings.BOOKING_MAX_HOURS
+    if hours > limit:
         raise ValidationFailed(
-            "bad_duration",
-            f"A reserva pode ter de 1 a {settings.BOOKING_MAX_HOURS} horas.")
+            "bad_duration", f"A reserva pode ter de 1 a {limit} horas.")
     if start <= _now(now):
         raise ValidationFailed("in_past", "Escolha um horário no futuro.")
     hours_of_day = settings.BUSINESS_HOURS.get(ls.weekday())
@@ -148,29 +148,32 @@ STAFF_CANNOT_BOOK = 'A equipe não faz reservas; use "Bloquear horário".'
 
 
 MONTHLY_WEEKS = 4
-TOURNAMENT_MAX_DAYS = 7
+TOURNAMENT_MAX_RANGES = 20
 
 
-def create_booking_series(user, field: Field, start: datetime, end: datetime, contact: str,
-                          message: str = "", kind: str = "avulsa", days: int = 1,
+def create_booking_series(user, field: Field, start: datetime | None, end: datetime | None,
+                          contact: str, message: str = "", kind: str = "avulsa",
+                          ranges: list | None = None,
                           now: datetime | None = None) -> list[BookingRequest]:
-    """avulsa: 1 pedido; mensal: mesmo horário por 4 semanas; torneio: mesmo horário em
-    `days` dias seguidos. Tudo ou nada; a equipe é avisada uma vez só (1º pedido)."""
+    """avulsa: 1 pedido; mensal: mesmo horário por 4 semanas; torneio: lista livre de
+    períodos `ranges` [(start, end)], de qualquer duração dentro do expediente. Tudo ou
+    nada; a equipe é avisada uma vez só (1º pedido)."""
     if kind == "avulsa":
         return [create_booking(user, field, start, end, contact, message, now=now)]
     if kind == "mensal":
-        step, count = timedelta(weeks=1), MONTHLY_WEEKS
+        items = [(start + timedelta(weeks=i), end + timedelta(weeks=i))
+                 for i in range(MONTHLY_WEEKS)]
     elif kind == "torneio":
-        step, count = timedelta(days=1), days
-        if not isinstance(count, int) or not 2 <= count <= TOURNAMENT_MAX_DAYS:
+        items = sorted(ranges or [])
+        if not 1 <= len(items) <= TOURNAMENT_MAX_RANGES:
             raise ValidationFailed(
-                "bad_days", f"Torneio: informe de 2 a {TOURNAMENT_MAX_DAYS} dias seguidos.")
+                "bad_ranges",
+                f"Torneio: escolha de 1 a {TOURNAMENT_MAX_RANGES} períodos.")
     else:
         raise ValidationFailed("invalid_kind", "Tipo de reserva inválido.")
     series, out = str(uuid.uuid4()), []
     with transaction.atomic():
-        for i in range(count):
-            s, e = start + step * i, end + step * i
+        for i, (s, e) in enumerate(items):
             try:
                 out.append(create_booking(user, field, s, e, contact, message, now=now,
                                           kind=kind, series=series, notify=i == 0))
@@ -183,7 +186,8 @@ def create_booking_series(user, field: Field, start: datetime, end: datetime, co
 
 def create_booking(user, field: Field, start: datetime, end: datetime, contact: str,
                    message: str = "", now: datetime | None = None,
-                   kind: str = "avulsa", series: str = "", notify: bool = True) -> BookingRequest:
+                   kind: str = "avulsa", series: str = "", notify: bool = True
+                   ) -> BookingRequest:
     # A equipe tira horários com bloqueios (create_block), nunca com pedidos.
     if _is_staff(user):
         raise Forbidden("staff_cannot_book", STAFF_CANNOT_BOOK)
@@ -192,7 +196,8 @@ def create_booking(user, field: Field, start: datetime, end: datetime, contact: 
                           "invalid_message", "Mensagem", False)
     with transaction.atomic():
         locked = _lock_field(field)
-        validate_window(locked, start, end, now)
+        validate_window(locked, start, end, now,
+                        max_hours=24 if kind == "torneio" else None)
         _raise_on_conflicts(locked, start, end)
         mine = BookingRequest.objects.filter(
             user=user, field=locked, start__lt=end, end__gt=start,
