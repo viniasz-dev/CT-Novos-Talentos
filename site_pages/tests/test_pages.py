@@ -218,7 +218,7 @@ class PagesTests(TestCase):
         response = self.client.get("/painel/")
         self.assertContains(response, 'id="painel-abas"')
         self.assertContains(response, 'role="tablist"')
-        for tab in ("Kanban", "Pedidos", "Bloqueios", "Agenda", "Criptografia"):
+        for tab in ("Kanban", "Pedidos", "Bloqueios", "Agenda"):
             self.assertContains(response, tab)
         self.assertContains(response, "js/panel.js")
         self.assertContains(response, "data-panel-denied")
@@ -227,7 +227,7 @@ class PagesTests(TestCase):
         shell = re.search(r'<div[^>]*data-panel-shell[^>]*>', html).group(0)
         self.assertIn("hidden", shell)
         panels = re.findall(r'<section[^>]*role="tabpanel"[^>]*>', html)
-        self.assertEqual(len(panels), 5)
+        self.assertEqual(len(panels), 4)
         # Kanban é a primeira aba e a única visível de início
         first_tab = re.search(r'<button[^>]*role="tab"[^>]*>', html).group(0)
         self.assertIn('data-tab="kanban"', first_tab)
@@ -317,9 +317,9 @@ class CryptoPageTests(TestCase):
     def test_crypto_page_removed(self):
         self.assertEqual(self.client.get("/criptografia/").status_code, 404)
 
-    def test_painel_has_crypto_tab_and_kpis(self):
+    def test_painel_has_kpis_and_no_crypto_tab(self):
         r = self.client.get("/painel/")
-        self.assertContains(r, 'data-tab="cripto"')
+        self.assertNotContains(r, 'data-tab="cripto"')
         self.assertContains(r, "data-kpis")
 
 

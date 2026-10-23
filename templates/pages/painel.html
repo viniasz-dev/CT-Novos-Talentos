@@ -7,7 +7,6 @@
   <div class="container booking-hero__inner">
     <div>
       <h1 id="painel-titulo">Painel da equipe</h1>
-      <p class="booking-hero__lead">Os pedidos de reserva num quadro só: aprove, recuse ou cancele arrastando o card ou pelo botão "Mover para…".</p>
     </div>
   </div>
 </section>
@@ -30,14 +29,12 @@
         <button class="tabs__tab" type="button" role="tab" id="aba-pedidos" data-tab="pedidos" aria-controls="painel-pedidos" aria-selected="false" tabindex="-1">Pedidos</button>
         <button class="tabs__tab" type="button" role="tab" id="aba-bloqueios" data-tab="bloqueios" aria-controls="painel-bloqueios" aria-selected="false" tabindex="-1">Bloqueios</button>
         <button class="tabs__tab" type="button" role="tab" id="aba-agenda" data-tab="agenda" aria-controls="painel-agenda" aria-selected="false" tabindex="-1">Agenda do dia</button>
-        <button class="tabs__tab" type="button" role="tab" id="aba-cripto" data-tab="cripto" aria-controls="painel-cripto" aria-selected="false" tabindex="-1">Criptografia</button>
       </div>
 
       <section id="painel-kanban" class="tabs__panel" role="tabpanel" tabindex="0" aria-labelledby="aba-kanban">
         <section class="kpis" data-kpis aria-labelledby="kpis-titulo">
           <h2 id="kpis-titulo" class="visually-hidden">Indicadores</h2>
           <ul class="kpis__grid" data-kpi-grid></ul>
-          <p class="kpis__note muted">Próximos 7 dias a partir de hoje, no campo escolhido no filtro. Receita estimada: horas aprovadas vezes o preço por hora.</p>
           <p class="visually-hidden" data-kpi-live aria-live="polite"></p>
         </section>
         <form id="filtros-kanban" class="form toolbar kanban-filters" novalidate role="search" aria-label="Filtrar o Kanban">
@@ -63,7 +60,6 @@
           </div>
           <div class="form-alert" data-form-error role="alert" tabindex="-1" hidden></div>
         </form>
-        <p class="kanban__hint muted">Arraste o card para outra coluna ou use "Mover para…". Recusado e Cancelado são finais.</p>
         <div data-kanban-status aria-live="polite" hidden></div>
         <div class="kanban" data-kanban-board aria-label="Kanban de pedidos" role="region" hidden></div>
         <p class="visually-hidden" data-kanban-live aria-live="polite"></p>
@@ -152,11 +148,6 @@
         <div data-agenda-status aria-live="polite" hidden></div>
       </section>
 
-      <section id="painel-cripto" class="tabs__panel" role="tabpanel" tabindex="0" aria-labelledby="aba-cripto" hidden>
-        <p class="cipher-intro muted">Os 12 pedidos mais recentes como estão no banco: contato e mensagem em tokens Fernet, ilegíveis sem a chave. "Descriptografar" mostra o texto por 30 segundos e grava o acesso na auditoria.</p>
-        <ul class="order-list cipher-list" data-crypto-list aria-label="Pedidos e dados criptografados"></ul>
-        <div data-crypto-status aria-live="polite" hidden></div>
-      </section>
     </div>
     <noscript><p class="state">Ative o JavaScript para usar o painel.</p></noscript>
   </div>
