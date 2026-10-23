@@ -41,6 +41,22 @@
         <p class="visually-hidden" data-fields-skeleton>Carregando campos…</p>
         <div class="pick-grid" role="radiogroup" aria-labelledby="passo-campo" data-fields-list hidden></div>
         <div data-fields-status aria-live="polite" hidden></div>
+        {% if not user.is_staff %}
+        <div class="pick-grid pick-grid--kinds" role="radiogroup" aria-label="Modalidade da reserva">
+          <button type="button" class="pick pick--kind" role="radio" aria-checked="true" data-kind="avulsa">
+            <span class="pick__body"><span class="pick__name">Avulsa</span><span class="pick__desc">Um horário, uma vez.</span></span>
+            <span class="pick__check" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="pick pick--kind" role="radio" aria-checked="false" data-kind="mensal">
+            <span class="pick__body"><span class="pick__name">Mensal</span><span class="pick__desc">Mesmo dia e horário por 4 semanas.</span></span>
+            <span class="pick__check" aria-hidden="true"></span>
+          </button>
+          <button type="button" class="pick pick--kind" role="radio" aria-checked="false" data-kind="torneio">
+            <span class="pick__body"><span class="pick__name">Torneio</span><span class="pick__desc">Mesmo horário em dias seguidos.</span></span>
+            <span class="pick__check" aria-hidden="true"></span>
+          </button>
+        </div>
+        {% endif %}
 
         <template data-state="empty">
           <div class="state">
@@ -164,16 +180,10 @@
       <form id="form-reserva" class="form ticket__form" novalidate>
         <div class="form-alert" data-form-error role="alert" tabindex="-1" hidden></div>
 
-        <fieldset class="field">
-          <legend class="field__label">Tipo de reserva</legend>
-          <label><input type="radio" name="kind" value="avulsa" checked /> Avulsa (este horário)</label>
-          <label><input type="radio" name="kind" value="mensal" /> Mensal (mesmo dia e horário por 4 semanas)</label>
-          <label><input type="radio" name="kind" value="torneio" /> Torneio (mesmo horário em dias seguidos)</label>
-          <div data-torneio-days hidden>
-            <label class="field__label" for="reserva-dias">Quantos dias seguidos (2 a 7)</label>
-            <input id="reserva-dias" name="days" type="number" min="2" max="7" value="2" inputmode="numeric" />
-          </div>
-        </fieldset>
+        <div class="field" data-torneio-days hidden>
+          <label class="field__label" for="reserva-dias">Quantos dias seguidos (2 a 7)</label>
+          <input id="reserva-dias" name="days" type="number" min="2" max="7" value="2" inputmode="numeric" />
+        </div>
 
         <div class="field">
           <label class="field__label" for="reserva-contato">Telefone ou WhatsApp</label>

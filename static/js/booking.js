@@ -139,7 +139,9 @@ export async function initBooking(root = globalThis.document.getElementById("res
   const submit = ui.form.querySelector('button[type="submit"]');
   const daysBox = ui.form.querySelector("[data-torneio-days]");
   const daysInput = ui.form.querySelector('[name="days"]');
-  const kindValue = () => [...ui.form.querySelectorAll('[name="kind"]')].find((r) => r.checked)?.value || "avulsa";
+  const kindButtons = [...root.querySelectorAll("[data-kind]")];
+  let kind = "avulsa";
+  const kindValue = () => kind;
   const repeats = () => {
     const kind = kindValue();
     return kind === "mensal" ? 4 : kind === "torneio" ? Number(daysInput?.value) || 2 : 1;
@@ -700,10 +702,15 @@ export async function initBooking(root = globalThis.document.getElementById("res
       })
     : null;
 
-  ui.form.addEventListener("change", () => {
-    if (daysBox) daysBox.hidden = kindValue() !== "torneio";
-    renderSummary();
-  });
+  for (const button of kindButtons) {
+    button.addEventListener("click", () => {
+      kind = button.getAttribute("data-kind");
+      for (const other of kindButtons) other.setAttribute("aria-checked", String(other === button));
+      if (daysBox) daysBox.hidden = kind !== "torneio";
+      renderSummary();
+    });
+  }
+  ui.form.addEventListener("change", renderSummary);
   ui.form.addEventListener("submit", async (event) => {
     event.preventDefault();
     if (submit?.disabled) return;

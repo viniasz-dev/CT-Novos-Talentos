@@ -836,6 +836,16 @@
   transition: border-color var(--t-fast), background-color var(--t-fast);
 }
 
+.pick--kind {
+  grid-template-columns: 1fr;
+  min-height: 0;
+  cursor: pointer;
+}
+
+.pick-grid--kinds {
+  margin-top: var(--s-3);
+}
+
 .pick:hover {
   border-color: var(--c-line-strong);
   background: var(--surface-raised);
